@@ -3,6 +3,7 @@ import { HydratedDocument } from 'mongoose';
 import { DbMixins, schemaOptions } from 'src/shared/constants/db.const';
 import DEFAULT_MATCHERS from 'src/shared/constants/regex.const';
 import { Gender } from '../enums';
+import DEFAULT_IMAGES from 'src/shared/constants/images.const';
 
 @Schema(schemaOptions)
 export class User extends DbMixins {
@@ -33,6 +34,12 @@ export class User extends DbMixins {
 
    @Prop({ type: String, enum: Object.values(Gender) })
    gender: Gender;
+
+   @Prop({ type: String, default: DEFAULT_IMAGES.profilePicture })
+   profilePicture: string;
+
+   @Prop({ type: String, required: false })
+   profilePictureId: string;
 }
 
 export type UserDocument = HydratedDocument<User>;

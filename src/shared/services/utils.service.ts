@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
 import { UserDocument } from 'src/api/user/schema/user.schema';
 
 @Injectable()
 export class UtilService {
+   constructor(private readonly configService: ConfigService) {}
+
    async hashPassword(password: string) {
       const saltFactor = await bcrypt.genSalt(12);
       const hashedPassword = await bcrypt.hash(password, saltFactor);

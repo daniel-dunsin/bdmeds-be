@@ -4,7 +4,7 @@ import { Jwt, JwtDocument } from './schema/jwt.schema';
 import { Model } from 'mongoose';
 import { UserService } from '../user/user.service';
 import { RegisterDto } from './dto/register.dto';
-import { UtilService } from 'src/shared/utils/utils.service';
+import { UtilService } from 'src/shared/services/utils.service';
 import { TokenService } from '../token/token.service';
 import * as crypto from 'crypto';
 import { TokenTypes } from '../token/enums';
