@@ -5,13 +5,16 @@ import { RegisterDto } from './dto/register.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { SignInDto } from './dto/sign-in.dto';
+import { IsPublic } from 'src/shared/decorators/auth.decorators';
 
 @Controller('auth')
 @ApiTags('auth')
+@IsPublic()
 export class AuthController {
    constructor(private readonly authService: AuthService) {}
 
    @Post('/signup')
+   @IsPublic()
    async signUp(@Body() signUpDto: RegisterDto) {
       const data = await this.authService.signUp(signUpDto);
 
@@ -19,6 +22,7 @@ export class AuthController {
    }
 
    @Post('/verify-email')
+   @IsPublic()
    @HttpCode(HttpStatus.OK)
    async verifyEmail(@Body() verifyEmailDto: VerifyEmailDto) {
       const data = await this.authService.verifyEmail(verifyEmailDto);
@@ -27,8 +31,8 @@ export class AuthController {
    }
 
    @Post('/verify-email/request')
+   @IsPublic()
    @HttpCode(HttpStatus.OK)
-   @ApiOperation({ summary: 'resend verification email' })
    @ApiBody({ schema: { type: 'object', properties: { email: { type: 'string' } } } })
    async requestVerificationEmail(@Body('email') email: string) {
       const data = await this.authService.requestEmailVerificationLink(email);
@@ -37,8 +41,8 @@ export class AuthController {
    }
 
    @Post('/forgot-password')
+   @IsPublic()
    @HttpCode(HttpStatus.OK)
-   @ApiOperation({ summary: 'resend password reset link' })
    @ApiBody({ schema: { type: 'object', properties: { email: { type: 'string' } } } })
    async forgotPassword(@Body('email') email: string) {
       const data = await this.authService.forgotPassword(email);
@@ -48,6 +52,7 @@ export class AuthController {
 
    @Post('/reset-password')
    @HttpCode(HttpStatus.OK)
+   @IsPublic()
    async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
       const data = await this.authService.resetPassword(resetPasswordDto);
 
@@ -55,6 +60,7 @@ export class AuthController {
    }
 
    @Post('/signin')
+   @IsPublic()
    @HttpCode(HttpStatus.OK)
    async signIn(@Body() signInDto: SignInDto) {
       const data = await this.authService.signIn(signInDto);
