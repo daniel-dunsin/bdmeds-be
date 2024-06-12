@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Jwt, JwtDocument } from './schema/jwt.schema';
 import { Model } from 'mongoose';
@@ -206,6 +206,33 @@ export class AuthService {
          success: true,
          message: 'sign in successful',
          data,
+      };
+   }
+
+   async refreshSession(refreshToken: string) {
+      const verifiedToken = await this.jwtService.verifyAsync(refreshToken);
+      if (!verifiedToken) {
+         throw new ForbiddenException('your session is invalid or has expired');
+      }
+      const jwtToken = await this._jwtModel.findOne({ type: JwtType.refresh, token: refreshToken });
+
+      if (!jwtToken) {
+         throw new ForbiddenException('your session is invalid or has expired');
+      }
+
+      const user = await this.userService.getUser({ _id: jwtToken.user });
+      delete user['_doc'].password;
+
+      const accessToken = await this.jwtService.signAsync({ ...user['_doc'] });
+      await this._jwtModel.updateOne({ type: JwtType.access, user: jwtToken.user }, { token: accessToken }, { upsert: true });
+
+      return {
+         success: true,
+         message: 'session refreshed successfully',
+         data: {
+            accessToken,
+            refreshToken,
+         },
       };
    }
 }

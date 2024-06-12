@@ -24,9 +24,8 @@ export class AuthGuard implements CanActivate {
       const publicRoute = this.reflector.get(IsPublic, context.getHandler());
       if (publicRoute) return true;
 
-      console.log(await this._jwtModel.find({}));
-
       const user = await this.validateToken(req);
+      req['user'] = user;
 
       return true;
    }

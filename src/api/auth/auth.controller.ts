@@ -66,4 +66,14 @@ export class AuthController {
 
       return data;
    }
+
+   @Post('/session/refresh')
+   @IsPublic()
+   @HttpCode(HttpStatus.OK)
+   @ApiBody({ schema: { type: 'object', properties: { refreshToken: { type: 'string' } } } })
+   async refreshSesson(@Body('refreshToken') refreshToken: string) {
+      const data = await this.authService.refreshSession(refreshToken);
+
+      return data;
+   }
 }
