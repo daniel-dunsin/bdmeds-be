@@ -2,6 +2,7 @@ import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { DbMixins, schemaOptions } from 'src/shared/constants/db.const';
 import DEFAULT_MATCHERS from 'src/shared/constants/regex.const';
+import { Gender } from '../enums';
 
 @Schema(schemaOptions)
 export class User extends DbMixins {
@@ -29,6 +30,9 @@ export class User extends DbMixins {
 
    @Prop({ type: Boolean, default: false })
    emailVerified: boolean;
+
+   @Prop({ type: String, enum: Object.values(Gender) })
+   gender: Gender;
 }
 
 export type UserDocument = HydratedDocument<User>;

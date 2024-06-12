@@ -222,7 +222,14 @@ export class AuthService {
       const user = await this.userService.getUser({ _id: jwtToken.user });
 
       const accessToken = await this.jwtService.signAsync(this.utilService.excludePassword(user));
-      await this._jwtModel.updateOne({ type: JwtType.access, user: jwtToken.user }, { token: accessToken }, { upsert: true });
+      await this._jwtModel.updateOne(
+         {
+            type: JwtType.access,
+            user: jwtToken.user,
+         },
+         { token: accessToken },
+         { upsert: true },
+      );
 
       return {
          success: true,
