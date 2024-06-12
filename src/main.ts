@@ -44,7 +44,12 @@ async function bootstrap() {
    const authGuard = app.select(AuthModule).get(AuthGuard);
    app.useGlobalGuards(authGuard);
 
-   const swaggerConfig = new DocumentBuilder().setTitle('BDMeds 🏥').setDescription('One or two!').setVersion('1.0.0').build();
+   const swaggerConfig = new DocumentBuilder()
+      .setTitle('BDMeds 🏥')
+      .setDescription('One or two!')
+      .setVersion('1.0.0')
+      .addBearerAuth()
+      .build();
 
    const swaggerDoc = SwaggerModule.createDocument(app, swaggerConfig);
    SwaggerModule.setup('/v1/docs', app, swaggerDoc, { useGlobalPrefix: true });

@@ -1,5 +1,5 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
@@ -9,7 +9,6 @@ import { IsPublic } from 'src/shared/decorators/auth.decorators';
 
 @Controller('auth')
 @ApiTags('auth')
-@IsPublic()
 export class AuthController {
    constructor(private readonly authService: AuthService) {}
 

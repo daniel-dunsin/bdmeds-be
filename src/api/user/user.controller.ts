@@ -1,9 +1,10 @@
 import { Controller } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UserProvider } from './user.provider';
 
 @Controller('user')
 @ApiTags('user')
+@ApiBearerAuth()
 export class UserController {
-    constructor(private readonly userProvider: UserProvider) {}
+   constructor(private readonly userProvider: UserProvider) {}
 }
