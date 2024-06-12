@@ -2,7 +2,7 @@ import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { DbMixins, schemaOptions } from 'src/shared/constants/db.const';
 import DEFAULT_MATCHERS from 'src/shared/constants/regex.const';
-import { Gender } from '../enums';
+import { Gender, Roles } from '../enums';
 import DEFAULT_IMAGES from 'src/shared/constants/images.const';
 
 @Schema(schemaOptions)
@@ -40,6 +40,9 @@ export class User extends DbMixins {
 
    @Prop({ type: String, required: false })
    profilePictureId: string;
+
+   @Prop({ type: String, required: true, enum: Object.values(Roles) })
+   role: Roles;
 }
 
 export type UserDocument = HydratedDocument<User>;

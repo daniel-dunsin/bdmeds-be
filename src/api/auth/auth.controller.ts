@@ -1,7 +1,11 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { RegisterDto } from './dto/register.dto';
+import {
+   OnBoardDoctorDto,
+   OnBoardPatientDto,
+   RegisterDto,
+} from './dto/register.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { SignInDto } from './dto/sign-in.dto';
@@ -12,10 +16,18 @@ import { IsPublic } from 'src/shared/decorators/auth.decorators';
 export class AuthController {
    constructor(private readonly authService: AuthService) {}
 
-   @Post('/signup')
+   @Post('/signup/patient')
    @IsPublic()
-   async signUp(@Body() signUpDto: RegisterDto) {
-      const data = await this.authService.signUp(signUpDto);
+   async onBoardPatient(@Body() onBoardPatientDto: OnBoardPatientDto) {
+      const data = await this.authService.onBoardPatient(onBoardPatientDto);
+
+      return data;
+   }
+
+   @Post('/signup/doctor')
+   @IsPublic()
+   async onBoardDoctor(@Body() onBoardDoctorDto: OnBoardDoctorDto) {
+      const data = await this.authService.onBoardDoctor(onBoardDoctorDto);
 
       return data;
    }
@@ -32,7 +44,9 @@ export class AuthController {
    @Post('/verify-email/request')
    @IsPublic()
    @HttpCode(HttpStatus.OK)
-   @ApiBody({ schema: { type: 'object', properties: { email: { type: 'string' } } } })
+   @ApiBody({
+      schema: { type: 'object', properties: { email: { type: 'string' } } },
+   })
    async requestVerificationEmail(@Body('email') email: string) {
       const data = await this.authService.requestEmailVerificationLink(email);
 
@@ -42,7 +56,9 @@ export class AuthController {
    @Post('/forgot-password')
    @IsPublic()
    @HttpCode(HttpStatus.OK)
-   @ApiBody({ schema: { type: 'object', properties: { email: { type: 'string' } } } })
+   @ApiBody({
+      schema: { type: 'object', properties: { email: { type: 'string' } } },
+   })
    async forgotPassword(@Body('email') email: string) {
       const data = await this.authService.forgotPassword(email);
 
@@ -70,7 +86,12 @@ export class AuthController {
    @Post('/session/refresh')
    @IsPublic()
    @HttpCode(HttpStatus.OK)
-   @ApiBody({ schema: { type: 'object', properties: { refreshToken: { type: 'string' } } } })
+   @ApiBody({
+      schema: {
+         type: 'object',
+         properties: { refreshToken: { type: 'string' } },
+      },
+   })
    async refreshSesson(@Body('refreshToken') refreshToken: string) {
       const data = await this.authService.refreshSession(refreshToken);
 

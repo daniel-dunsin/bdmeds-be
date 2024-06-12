@@ -1,9 +1,19 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+   BadRequestException,
+   ForbiddenException,
+   Injectable,
+   NotFoundException,
+   UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Jwt, JwtDocument } from './schema/jwt.schema';
 import { Model } from 'mongoose';
 import { UserService } from '../user/user.service';
-import { RegisterDto } from './dto/register.dto';
+import {
+   OnBoardDoctorDto,
+   OnBoardPatientDto,
+   RegisterDto,
+} from './dto/register.dto';
 import { UtilService } from 'src/shared/services/utils.service';
 import { TokenService } from '../token/token.service';
 import * as crypto from 'crypto';
@@ -17,6 +27,7 @@ import { SignInDto } from './dto/sign-in.dto';
 import { UserDocument } from '../user/schema/user.schema';
 import { JwtService } from '@nestjs/jwt';
 import { JwtType } from './enums/jwt.enum';
+import { Roles } from '../user/enums';
 
 @Injectable()
 export class AuthService {
@@ -31,11 +42,23 @@ export class AuthService {
    ) {}
 
    private async auth(user: UserDocument) {
-      const accessToken = await this.jwtService.signAsync(user, { expiresIn: '1h' });
-      const refreshToken = await this.jwtService.signAsync(user, { expiresIn: '7d' });
+      const accessToken = await this.jwtService.signAsync(user, {
+         expiresIn: '1h',
+      });
+      const refreshToken = await this.jwtService.signAsync(user, {
+         expiresIn: '7d',
+      });
 
-      await this._jwtModel.updateOne({ user: user._id, type: JwtType.access }, { token: accessToken }, { upsert: true });
-      await this._jwtModel.updateOne({ user: user._id, type: JwtType.refresh }, { token: refreshToken }, { upsert: true });
+      await this._jwtModel.updateOne(
+         { user: user._id, type: JwtType.access },
+         { token: accessToken },
+         { upsert: true },
+      );
+      await this._jwtModel.updateOne(
+         { user: user._id, type: JwtType.refresh },
+         { token: refreshToken },
+         { upsert: true },
+      );
 
       return {
          user,
@@ -46,7 +69,7 @@ export class AuthService {
       };
    }
 
-   async signUp(signUpDto: RegisterDto) {
+   async signUp(signUpDto: RegisterDto): Promise<UserDocument> {
       const userExists = await this.userService.getUser({
          $or: [
             {
@@ -57,10 +80,14 @@ export class AuthService {
       });
 
       if (userExists) {
-         throw new BadRequestException('Oops! A user with this email or phone number already exists');
+         throw new BadRequestException(
+            'Oops! A user with this email or phone number already exists',
+         );
       }
 
-      signUpDto.password = await this.utilService.hashPassword(signUpDto.password);
+      signUpDto.password = await this.utilService.hashPassword(
+         signUpDto.password,
+      );
 
       const user = await this.userService.createUser(signUpDto);
 
@@ -82,9 +109,28 @@ export class AuthService {
          },
       });
 
+      return user;
+   }
+
+   async onBoardPatient(onBoardPatientDto: OnBoardPatientDto) {
+      onBoardPatientDto.role = Roles.PATIENT;
+      const user = await this.signUp(onBoardPatientDto);
+      //  create patient profile;
+
       return {
          success: true,
-         message: 'Verification Email Sent 🪁',
+         message: 'Verification email sent 🪁',
+      };
+   }
+
+   async onBoardDoctor(onBoardDoctorDto: OnBoardDoctorDto) {
+      onBoardDoctorDto.role = Roles.DOCTOR;
+      const user = await this.signUp(onBoardDoctorDto);
+      // create doctor profile;
+
+      return {
+         success: true,
+         message: 'Verification email sent 🪁',
       };
    }
 
@@ -95,9 +141,15 @@ export class AuthService {
          type: TokenTypes.accountVerification,
       });
 
-      if (!token) throw new NotFoundException('Token is invalid, try to login to receive a new verification link');
+      if (!token)
+         throw new NotFoundException(
+            'Token is invalid, try to login to receive a new verification link',
+         );
 
-      await this.userService.updateUser({ email: token.email }, { emailVerified: true });
+      await this.userService.updateUser(
+         { email: token.email },
+         { emailVerified: true },
+      );
       await token.deleteOne();
 
       return {
@@ -109,8 +161,10 @@ export class AuthService {
    async requestEmailVerificationLink(email: string) {
       const user = await this.userService.getUser({ email });
 
-      if (!user) throw new NotFoundException("User with this email doesn't exist");
-      if (user.emailVerified) throw new NotFoundException('This account is already verified');
+      if (!user)
+         throw new NotFoundException("User with this email doesn't exist");
+      if (user.emailVerified)
+         throw new NotFoundException('This account is already verified');
 
       const token = await this.tokenService.findOrCreateToken({
          email: user.email,
@@ -172,11 +226,19 @@ export class AuthService {
          email: resetPasswordDto.email,
       });
 
-      if (!token) throw new NotFoundException('password reset link is invalid or has expired');
+      if (!token)
+         throw new NotFoundException(
+            'password reset link is invalid or has expired',
+         );
 
-      const hashedPassword = await this.utilService.hashPassword(resetPasswordDto.password);
+      const hashedPassword = await this.utilService.hashPassword(
+         resetPasswordDto.password,
+      );
 
-      await this.userService.updateUser({ email: token.email }, { password: hashedPassword });
+      await this.userService.updateUser(
+         { email: token.email },
+         { password: hashedPassword },
+      );
       await token.deleteOne();
 
       return {
@@ -191,13 +253,19 @@ export class AuthService {
       if (signInDto.email) {
          user = await this.userService.getUser({ email: signInDto.email });
       } else if (signInDto.phoneNumber) {
-         user = await this.userService.getUser({ phoneNumber: signInDto.phoneNumber });
+         user = await this.userService.getUser({
+            phoneNumber: signInDto.phoneNumber,
+         });
       }
 
       if (!user) throw new UnauthorizedException('Invalid login credentials');
 
-      const passwordMatch: boolean = await this.utilService.comparePassword(signInDto.password, user.password);
-      if (!passwordMatch) throw new UnauthorizedException('Invalid login credentials');
+      const passwordMatch: boolean = await this.utilService.comparePassword(
+         signInDto.password,
+         user.password,
+      );
+      if (!passwordMatch)
+         throw new UnauthorizedException('Invalid login credentials');
 
       const data = await this.auth(this.utilService.excludePassword(user));
 
@@ -213,7 +281,10 @@ export class AuthService {
       if (!verifiedToken) {
          throw new ForbiddenException('your session is invalid or has expired');
       }
-      const jwtToken = await this._jwtModel.findOne({ type: JwtType.refresh, token: refreshToken });
+      const jwtToken = await this._jwtModel.findOne({
+         type: JwtType.refresh,
+         token: refreshToken,
+      });
 
       if (!jwtToken) {
          throw new ForbiddenException('your session is invalid or has expired');
@@ -221,7 +292,9 @@ export class AuthService {
 
       const user = await this.userService.getUser({ _id: jwtToken.user });
 
-      const accessToken = await this.jwtService.signAsync(this.utilService.excludePassword(user));
+      const accessToken = await this.jwtService.signAsync(
+         this.utilService.excludePassword(user),
+      );
       await this._jwtModel.updateOne(
          {
             type: JwtType.access,
