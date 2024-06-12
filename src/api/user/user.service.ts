@@ -5,35 +5,35 @@ import { FilterQuery, Model, MongooseUpdateQueryOptions, QueryOptions, UpdateQue
 
 @Injectable()
 export class UserService {
-    constructor(@InjectModel(User.name) private readonly _userModel: Model<UserDocument>) {}
+   constructor(@InjectModel(User.name) private readonly _userModel: Model<UserDocument>) {}
 
-    async createUser<T>(data: T) {
-        const user = await this._userModel.create(data);
+   async createUser<T>(data: T) {
+      const user = await this._userModel.create(data);
 
-        return user;
-    }
+      return user;
+   }
 
-    async getUser(filter: FilterQuery<UserDocument>) {
-        const user = await this._userModel.findOne(filter);
+   async getUser(filter: FilterQuery<UserDocument>) {
+      const user = await this._userModel.findOne(filter).select('+password');
 
-        return user;
-    }
+      return user;
+   }
 
-    async getUsers(filter: FilterQuery<UserDocument>) {
-        const users = await this._userModel.find(filter);
+   async getUsers(filter: FilterQuery<UserDocument>) {
+      const users = await this._userModel.find(filter);
 
-        return users;
-    }
+      return users;
+   }
 
-    async updateUser(filter: FilterQuery<UserDocument>, update: UpdateQuery<UserDocument>, options?: QueryOptions<UserDocument>) {
-        const user = await this._userModel.findOneAndUpdate(filter, update, { new: true, ...options });
+   async updateUser(filter: FilterQuery<UserDocument>, update: UpdateQuery<UserDocument>, options?: QueryOptions<UserDocument>) {
+      const user = await this._userModel.findOneAndUpdate(filter, update, { new: true, ...options });
 
-        return user;
-    }
+      return user;
+   }
 
-    async deleteUser(filter: FilterQuery<UserDocument>, options?: QueryOptions<UserDocument>) {
-        const user = await this._userModel.findOneAndDelete(filter, options);
+   async deleteUser(filter: FilterQuery<UserDocument>, options?: QueryOptions<UserDocument>) {
+      const user = await this._userModel.findOneAndDelete(filter, options);
 
-        return user;
-    }
+      return user;
+   }
 }

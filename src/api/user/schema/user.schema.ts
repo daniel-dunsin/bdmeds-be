@@ -24,7 +24,7 @@ export class User extends DbMixins {
    @Prop({ required: true })
    lastName: string;
 
-   @Prop()
+   @Prop({ select: false })
    password?: string;
 
    @Prop({ type: Boolean, default: false })

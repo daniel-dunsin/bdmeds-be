@@ -4,21 +4,23 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schema/user.schema';
 import { UserProvider } from './user.provider';
 import { UserController } from './user.controller';
+import { SharedModule } from 'src/shared/shared.module';
 
 @Module({
-    imports: [
-        MongooseModule.forFeatureAsync([
-            {
-                name: User.name,
-                useFactory() {
-                    const schema = UserSchema;
-                    return schema;
-                },
+   imports: [
+      MongooseModule.forFeatureAsync([
+         {
+            name: User.name,
+            useFactory() {
+               const schema = UserSchema;
+               return schema;
             },
-        ]),
-    ],
-    providers: [UserService, UserProvider],
-    controllers: [UserController],
-    exports: [UserService],
+         },
+      ]),
+      SharedModule,
+   ],
+   providers: [UserService, UserProvider],
+   controllers: [UserController],
+   exports: [UserService],
 })
 export class UserModule {}

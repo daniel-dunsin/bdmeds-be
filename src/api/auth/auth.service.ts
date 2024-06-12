@@ -199,8 +199,7 @@ export class AuthService {
       const passwordMatch: boolean = await this.utilService.comparePassword(signInDto.password, user.password);
       if (!passwordMatch) throw new UnauthorizedException('Invalid login credentials');
 
-      delete user['_doc'].password;
-      const data = await this.auth({ ...user['_doc'] });
+      const data = await this.auth(this.utilService.excludePassword(user));
 
       return {
          success: true,
@@ -221,9 +220,8 @@ export class AuthService {
       }
 
       const user = await this.userService.getUser({ _id: jwtToken.user });
-      delete user['_doc'].password;
 
-      const accessToken = await this.jwtService.signAsync({ ...user['_doc'] });
+      const accessToken = await this.jwtService.signAsync(this.utilService.excludePassword(user));
       await this._jwtModel.updateOne({ type: JwtType.access, user: jwtToken.user }, { token: accessToken }, { upsert: true });
 
       return {
