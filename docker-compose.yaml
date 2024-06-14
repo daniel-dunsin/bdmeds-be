@@ -9,7 +9,7 @@ services:
          - .env
       environment:
          - NODE_ENV=production
-      container_name: educrat-be
+      container_name: bdmed-pipeops
       develop:
          watch:
             - path: ./package.json
