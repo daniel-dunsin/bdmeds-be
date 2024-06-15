@@ -64,4 +64,11 @@ export class DoctorController {
 
       return data;
    }
+
+   @Get('/:doctorId/kyc')
+   async getDoctorKyc(@Param('doctorId', MongoIdPipe) doctorId: string) {
+      const data = await this.doctorProvider.getDoctorKyc(doctorId);
+
+      return data;
+   }
 }

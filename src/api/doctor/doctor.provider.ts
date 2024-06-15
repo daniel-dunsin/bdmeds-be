@@ -97,4 +97,14 @@ export class DoctorProvider {
          message: 'Kyc Docs uploaded successfully',
       };
    }
+
+   async getDoctorKyc(doctorId: string) {
+      const data = await this.doctorService.getDoctorKyc(doctorId);
+
+      return {
+         success: true,
+         message: 'kyc info fetched',
+         data,
+      };
+   }
 }
