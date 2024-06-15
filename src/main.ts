@@ -54,7 +54,7 @@ async function bootstrap() {
    const swaggerDoc = SwaggerModule.createDocument(app, swaggerConfig);
    SwaggerModule.setup('/v1/docs', app, swaggerDoc, { useGlobalPrefix: true });
 
-   app.use('api/v1/health-check', (res: express.Response) => {
+   app.use('/api/v1/health-check', (_, res: express.Response) => {
       res.json({ status: 'OK' });
    });
 
