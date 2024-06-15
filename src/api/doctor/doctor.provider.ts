@@ -123,5 +123,5 @@ export class DoctorProvider {
       };
    }
 
-   async sendFailedKycVerificationAlert(doctorId: string) {}
+   async rejectDoctorKyc(doctorId: string) {}
 }
