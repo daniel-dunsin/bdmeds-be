@@ -6,6 +6,7 @@ export enum DoctorSpeciality {
    UROLOGIST = 'urologist',
    OPTOMETRIST = 'optometrist',
    PYSCHOTHERAPIST = 'pyschotherapist',
+   LAB_SCIENTIST = 'lab scientist',
 }
 
 export enum KycIdType {

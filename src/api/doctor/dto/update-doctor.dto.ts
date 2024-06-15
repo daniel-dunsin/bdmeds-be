@@ -4,6 +4,7 @@ import { Days, DoctorSpeciality } from '../enums';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsOptional, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+import { BaseUpdateUserDto } from 'src/api/user/dto/update-user.dto';
 
 export class SocialLinks {
    @IsString(true)
@@ -30,33 +31,7 @@ export class AvailableDay {
    endTime: Date;
 }
 
-export class Address {
-   @IsString(false)
-   state: string;
-
-   @IsString(false)
-   city: string;
-
-   @IsString(false)
-   country: string;
-}
-
-export class UpdateDoctorDto {
-   @IsString(true)
-   firstName?: string;
-
-   @IsString(true)
-   lastName?: string;
-
-   @IsString(true)
-   country?: string;
-
-   @IsEnum(Gender, true)
-   gender?: Gender;
-
-   @IsNumber(true)
-   yearsOfExperience?: number;
-
+export class UpdateDoctorDto extends BaseUpdateUserDto {
    @IsEnum(DoctorSpeciality, true)
    speciality?: DoctorSpeciality;
 
@@ -72,9 +47,4 @@ export class UpdateDoctorDto {
    @Type(() => AvailableDay)
    @IsOptional()
    availableDays: AvailableDay[];
-
-   @ApiProperty({ type: Address })
-   @IsOptional()
-   @ValidateNested()
-   address: Address;
 }

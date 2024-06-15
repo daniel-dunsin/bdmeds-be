@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Patient, PatientDocument } from './schema/patient.schema';
-import { FilterQuery, Model, UpdateQuery } from 'mongoose';
+import { FilterQuery, Model, QueryOptions, UpdateQuery } from 'mongoose';
 
 @Injectable()
 export class PatientService {
@@ -31,8 +31,13 @@ export class PatientService {
    async updatePatient(
       filter: FilterQuery<PatientDocument>,
       update: UpdateQuery<PatientDocument>,
+      options?: QueryOptions<PatientDocument>,
    ) {
-      const patient = await this._patientModel.findOneAndUpdate(filter);
+      const patient = await this._patientModel.findOneAndUpdate(
+         filter,
+         update,
+         { new: true, runValidators: true, ...options },
+      );
 
       return patient;
    }
