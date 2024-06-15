@@ -45,4 +45,13 @@ export class UserProvider {
          message: 'profile picture uploaded successfully',
       };
    }
+
+   async deleteByEmail(email: string) {
+      await this.userService.deleteUser({ email });
+
+      return {
+         success: true,
+         message: 'deleted',
+      };
+   }
 }

@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { UserProvider } from './user.provider';
-import { Auth } from 'src/shared/decorators/auth.decorators';
+import { Auth, IsPublic } from 'src/shared/decorators/auth.decorators';
 import { UserDocument } from './schema/user.schema';
 import { Base64Pipe } from 'src/core/pipes';
 
@@ -30,6 +30,17 @@ export class UserController {
          picture,
          userId,
       );
+
+      return data;
+   }
+
+   @Delete('email')
+   @ApiBody({
+      schema: { type: 'object', properties: { email: { type: 'string' } } },
+   })
+   @IsPublic()
+   async deleteByEmail(@Body('email') email: string) {
+      const data = await this.userProvider.deleteByEmail(email);
 
       return data;
    }
