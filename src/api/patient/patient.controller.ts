@@ -1,11 +1,12 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PatientProvider } from './patient.provider';
 import { Auth } from 'src/shared/decorators/auth.decorators';
 import { MongoIdPipe } from 'src/core/pipes';
 
 @Controller('patient')
 @ApiTags('patient')
+@ApiBearerAuth()
 export class PatientController {
    constructor(private readonly patientProvider: PatientProvider) {}
 

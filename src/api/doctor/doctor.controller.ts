@@ -1,11 +1,13 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DoctorProvider } from './doctor.provider';
 import { Auth, IsPublic } from 'src/shared/decorators/auth.decorators';
 import { MongoIdPipe } from 'src/core/pipes';
+import { DoctorSpeciality } from './enums';
 
 @Controller('/doctor')
 @ApiTags('doctor')
+@ApiBearerAuth()
 export class DoctorController {
    constructor(private readonly doctorProvider: DoctorProvider) {}
 
@@ -22,5 +24,16 @@ export class DoctorController {
       const data = await this.doctorProvider.getDoctor(doctorId);
 
       return data;
+   }
+
+   @Get('/specialities')
+   @ApiOperation({ summary: 'get list of specializations' })
+   @IsPublic()
+   async getSpecialities() {
+      return {
+         success: true,
+         message: 'specialities fetched',
+         data: Object.values(DoctorSpeciality),
+      };
    }
 }

@@ -33,4 +33,6 @@ export class DoctorProvider {
          data,
       };
    }
+
+   async updateDoctor(doctorId: string) {}
 }
