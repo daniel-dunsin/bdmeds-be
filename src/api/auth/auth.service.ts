@@ -46,6 +46,7 @@ export class AuthService {
    ) {}
 
    private async auth(user: UserDocument) {
+      const ONE_HOUR = 1000 * 60 * 60;
       const accessToken = await this.jwtService.signAsync(user, {
          expiresIn: '1h',
       });
@@ -69,6 +70,7 @@ export class AuthService {
          meta: {
             accessToken,
             refreshToken,
+            lifeSpan: ONE_HOUR,
          },
       };
    }
