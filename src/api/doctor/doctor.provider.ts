@@ -5,7 +5,7 @@ import { UpdateDoctorDto } from './dto/update-doctor.dto';
 import { UserService } from '../user/user.service';
 import { KycDocsDto } from './dto/kyc-verification.dto';
 import { UtilService } from 'src/shared/services/utils.service';
-import { FileService } from 'src/shared/services/file.service';
+import { FileService } from 'src/shared/file/file.service';
 import { KycStatus } from './enums';
 import { MailService } from 'src/shared/mail/mail.service';
 

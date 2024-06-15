@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { UserProvider } from './user.provider';
 import { Auth, IsPublic } from 'src/shared/decorators/auth.decorators';

@@ -1,31 +1,17 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {
-   v2 as cloudinary,
-   UploadApiOptions,
-   UploadApiResponse,
-} from 'cloudinary';
+import { v2, UploadApiOptions, UploadApiResponse } from 'cloudinary';
 
 @Injectable()
 export class FileService {
-   constructor(configService: ConfigService) {
-      const apiKey = configService.get<string>('CLOUDINARY_API_KEY');
-      const apiSecret = configService.get<string>('CLOUDINARY_API_ECRET');
-      const cloudName = configService.get<string>('CLOUDINARY_CLOUD_NAME');
-
-      cloudinary.config({
-         api_key: apiKey,
-         api_secret: apiSecret,
-         cloud_name: cloudName,
-      });
-   }
+   constructor(@Inject('Uploader') private readonly cloudinary: typeof v2) {}
 
    async uploadResource(
       file: string,
       options: UploadApiOptions = {},
    ): Promise<Pick<UploadApiResponse, 'url' | 'public_id'>> {
       try {
-         const data = await cloudinary.uploader.upload(file, {
+         const data = await this.cloudinary.uploader.upload(file, {
             ...options,
             folder: 'pendulum',
          });
@@ -44,7 +30,7 @@ export class FileService {
       options: UploadApiOptions = {},
    ): Promise<void> {
       try {
-         await cloudinary.uploader.destroy(public_id, { ...options });
+         await this.cloudinary.uploader.destroy(public_id, { ...options });
       } catch (error: any) {
          console.log(error);
          throw new BadRequestException(

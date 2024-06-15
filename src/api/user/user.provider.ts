@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDocument } from './schema/user.schema';
 import { UtilService } from 'src/shared/services/utils.service';
-import { FileService } from 'src/shared/services/file.service';
+import { FileService } from 'src/shared/file/file.service';
 
 @Injectable()
 export class UserProvider {
