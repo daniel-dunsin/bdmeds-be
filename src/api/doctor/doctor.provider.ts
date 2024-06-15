@@ -7,6 +7,7 @@ import { KycDocsDto } from './dto/kyc-verification.dto';
 import { UtilService } from 'src/shared/services/utils.service';
 import { FileService } from 'src/shared/services/file.service';
 import { KycStatus } from './enums';
+import { MailService } from 'src/shared/mail/mail.service';
 
 @Injectable()
 export class DoctorProvider {
@@ -14,6 +15,7 @@ export class DoctorProvider {
       private readonly doctorService: DoctorService,
       private readonly userService: UserService,
       private readonly fileService: FileService,
+      private readonly mailService: MailService,
    ) {}
 
    async getUserDoctor(userId: string) {
@@ -120,6 +122,15 @@ export class DoctorProvider {
          { status: KycStatus.SUCCESSFUL },
          doctorId,
       );
+
+      await this.mailService.sendMail({
+         to: data.user.email,
+         subject: 'KYC Verification Successful',
+         template: 'kyc-verification-successful',
+         context: {
+            firstName: data.user?.firstName,
+         },
+      });
 
       return {
          success: true,
