@@ -47,6 +47,7 @@ export class DoctorService {
       const doctor = await this.populate(
          this._doctorModel.findOneAndUpdate(filter, update, {
             new: true,
+            runValidators: true,
             ...options,
          }),
       );
