@@ -101,7 +101,7 @@ export class AuthService {
          type: TokenTypes.accountVerification,
       });
 
-      const link = `${this.configService.get('FRONTEND_URL')}/verify-email?email=${token.email}&token=${token.value}`;
+      const link = `${this.configService.get('FRONTEND_URL')}/account/verify?email=${token.email}&token=${token.value}`;
 
       await this.mailService.sendMail({
          to: user.email,
