@@ -1,7 +1,7 @@
 import { MinLength } from 'class-validator';
 import { DoctorSpeciality } from 'src/api/doctor/enums';
 import { Gender, Roles } from 'src/api/user/enums';
-import { IsEmail, IsEnum, IsString } from 'src/shared/decorators';
+import { IsEmail, IsEnum, IsNumber, IsString } from 'src/shared/decorators';
 
 export class RegisterDto {
    @IsEmail(false)
@@ -29,6 +29,9 @@ export class RegisterDto {
 export class OnBoardPatientDto extends RegisterDto {}
 
 export class OnBoardDoctorDto extends RegisterDto {
+   @IsNumber(false)
    yearsOfExperience: number;
+
+   @IsEnum(DoctorSpeciality, false)
    speciality: DoctorSpeciality;
 }
