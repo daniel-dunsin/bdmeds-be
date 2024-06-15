@@ -20,5 +20,6 @@ import { Doctor, DoctorSchema } from './schema/doctor.schema';
    ],
    providers: [DoctorService, DoctorProvider],
    controllers: [DoctorController],
+   exports: [DoctorService],
 })
 export class DoctorModule {}
