@@ -125,7 +125,7 @@ export class DoctorProvider {
 
       await this.mailService.sendMail({
          to: data.user.email,
-         subject: 'KYC Verification Successful',
+         subject: 'BDMeds: KYC Verification Successful',
          template: 'kyc-verification-successful',
          context: {
             firstName: data.user?.firstName,
@@ -135,9 +135,31 @@ export class DoctorProvider {
       return {
          success: true,
          message: 'Kyc Verified',
-         data,
       };
    }
 
-   async rejectDoctorKyc(doctorId: string) {}
+   async rejectDoctorKyc(doctorId: string) {
+      const data = await this.doctorService.updateDoctor(
+         { _id: doctorId },
+         { kycVerified: false },
+      );
+      await this.doctorService.updateKyc(
+         { status: KycStatus.FAILED },
+         doctorId,
+      );
+
+      await this.mailService.sendMail({
+         to: data.user.email,
+         subject: 'BDMeds: KYC Verification Failed',
+         template: 'kyc-verification-failed',
+         context: {
+            firstName: data.user?.firstName,
+         },
+      });
+
+      return {
+         success: true,
+         message: 'Kyc Rejected',
+      };
+   }
 }
