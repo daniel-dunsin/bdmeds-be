@@ -1,11 +1,20 @@
-import { ExecutionContext, SetMetadata, createParamDecorator } from '@nestjs/common';
+import {
+   ExecutionContext,
+   SetMetadata,
+   createParamDecorator,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
+import { Roles as IRoles } from 'src/api/user/enums';
+
+export const Roles = Reflector.createDecorator<IRoles[]>();
 
 export const IsPublic = Reflector.createDecorator();
 
-export const Auth = createParamDecorator((props: any, ctx: ExecutionContext) => {
-   const req = ctx.switchToHttp().getRequest<Request>();
+export const Auth = createParamDecorator(
+   (props: any, ctx: ExecutionContext) => {
+      const req = ctx.switchToHttp().getRequest<Request>();
 
-   return props ? req['user'][props] : req['user'];
-});
+      return props ? req['user'][props] : req['user'];
+   },
+);

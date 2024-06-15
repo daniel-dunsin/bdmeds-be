@@ -1,4 +1,10 @@
-import { CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+   CanActivate,
+   ExecutionContext,
+   ForbiddenException,
+   Injectable,
+   UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Request } from 'express';
@@ -7,7 +13,8 @@ import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/api/user/schema/user.schema';
 import { JwtType } from '../enums/jwt.enum';
 import { Reflector } from '@nestjs/core';
-import { IsPublic } from 'src/shared/decorators/auth.decorators';
+import { IsPublic, Roles } from 'src/shared/decorators/auth.decorators';
+import { Roles as IRoles } from 'src/api/user/enums';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -27,6 +34,16 @@ export class AuthGuard implements CanActivate {
       const user = await this.validateToken(req);
       req['user'] = user;
 
+      const roles: IRoles[] = this.reflector.get(Roles, context.getHandler());
+
+      if (roles && roles.length > 0) {
+         if (!roles.includes(user.role)) {
+            throw new UnauthorizedException(
+               `Only ${roles.join(',')} have access`,
+            );
+         }
+      }
+
       return true;
    }
 
@@ -43,7 +60,10 @@ export class AuthGuard implements CanActivate {
             throw new UnauthorizedException('Unauthorized!');
          }
 
-         const jwtToken = await this._jwtModel.find({ token, type: JwtType.access });
+         const jwtToken = await this._jwtModel.find({
+            token,
+            type: JwtType.access,
+         });
 
          if (!jwtToken) {
             throw new ForbiddenException('Session is invalid or has expired');
