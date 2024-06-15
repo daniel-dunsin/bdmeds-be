@@ -9,6 +9,7 @@ import {
    KycVerification,
    KycVerificationSchema,
 } from './schema/kyc-verification.schema';
+import { SharedModule } from 'src/shared/shared.module';
 
 @Module({
    imports: [
@@ -38,6 +39,7 @@ import {
          },
       ]),
       UserModule,
+      SharedModule,
    ],
    providers: [DoctorService, DoctorProvider],
    controllers: [DoctorController],

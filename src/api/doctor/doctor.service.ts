@@ -3,13 +3,17 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Doctor, DoctorDocument } from './schema/doctor.schema';
 import { FilterQuery, Model, Query, QueryOptions, UpdateQuery } from 'mongoose';
 import { KycDocsDto } from './dto/kyc-verification.dto';
-import { KycVerificationDocument } from './schema/kyc-verification.schema';
+import {
+   KycVerification,
+   KycVerificationDocument,
+} from './schema/kyc-verification.schema';
 
 @Injectable()
 export class DoctorService {
    constructor(
       @InjectModel(Doctor.name)
       private readonly _doctorModel: Model<DoctorDocument>,
+      @InjectModel(KycVerification.name)
       private readonly _kycModel: Model<KycVerificationDocument>,
    ) {}
 

@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DoctorProvider } from './doctor.provider';
 import { Auth, IsPublic } from 'src/shared/decorators/auth.decorators';
 import { MongoIdPipe } from 'src/core/pipes';
-import { DoctorSpeciality } from './enums';
+import { DoctorSpeciality, KycIdType } from './enums';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
 import { KycDocsDto } from './dto/kyc-verification.dto';
 
@@ -70,5 +70,15 @@ export class DoctorController {
       const data = await this.doctorProvider.getDoctorKyc(doctorId);
 
       return data;
+   }
+
+   @Get('/kyc/id-types')
+   @IsPublic()
+   async getKycIdTypes() {
+      return {
+         sucess: true,
+         message: 'id types fetched',
+         data: Object.values(KycIdType),
+      };
    }
 }
