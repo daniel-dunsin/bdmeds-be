@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { schemaOptions } from 'src/shared/constants/db.const';
 import { Doctor, DoctorDocument } from './doctor.schema';
-import { KycIdType } from '../enums';
+import { KycIdType, KycStatus } from '../enums';
 
 @Schema(schemaOptions)
 export class KycVerification {
@@ -23,6 +23,13 @@ export class KycVerification {
 
    @Prop()
    professionalCertPublicId: string;
+
+   @Prop({
+      type: String,
+      enum: Object.values(KycStatus),
+      default: KycStatus.PENDING,
+   })
+   status: KycStatus;
 }
 
 export type KycVerificationDocument = HydratedDocument<KycVerification>;

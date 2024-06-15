@@ -1,5 +1,5 @@
 import { IsBase64, IsEnum, IsString } from 'src/shared/decorators';
-import { KycIdType } from '../enums';
+import { KycIdType, KycStatus } from '../enums';
 
 export class KycDocsDto {
    @IsBase64(false)
@@ -13,4 +13,5 @@ export class KycDocsDto {
 
    idDocPublicId: string;
    professionalCertPublicId: string;
+   status: KycStatus;
 }

@@ -23,3 +23,9 @@ export enum Days {
    THURSDAY = 'Thursday',
    FRIDAY = 'Friday',
 }
+
+export enum KycStatus {
+   PENDING = 'pending',
+   SUCCESS = 'success',
+   FAILED = 'failed',
+}

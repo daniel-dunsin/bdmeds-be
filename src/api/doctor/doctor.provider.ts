@@ -6,6 +6,7 @@ import { UserService } from '../user/user.service';
 import { KycDocsDto } from './dto/kyc-verification.dto';
 import { UtilService } from 'src/shared/services/utils.service';
 import { FileService } from 'src/shared/services/file.service';
+import { KycStatus } from './enums';
 
 @Injectable()
 export class DoctorProvider {
@@ -80,6 +81,7 @@ export class DoctorProvider {
             professionalCert,
             professionalCertPublicId,
             idType: updateKycDto.idType,
+            status: KycStatus.PENDING,
          },
          doctor._id,
       );
@@ -107,4 +109,19 @@ export class DoctorProvider {
          data,
       };
    }
+
+   async verifyDoctorKyc(doctorId: string) {
+      const data = await this.doctorService.updateDoctor(
+         { _id: doctorId },
+         { kycVerified: true },
+      );
+
+      return {
+         success: true,
+         message: 'Kyc Verified',
+         data,
+      };
+   }
+
+   async sendFailedKycVerificationAlert(doctorId: string) {}
 }
