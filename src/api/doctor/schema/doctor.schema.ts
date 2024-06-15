@@ -2,7 +2,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { User, UserDocument } from 'src/api/user/schema/user.schema';
 import { schemaOptions } from 'src/shared/constants/db.const';
-import { DoctorSpeciality } from '../enums';
+import { Days, DoctorSpeciality } from '../enums';
+import { availableDays } from '../interfaces';
 
 @Schema(schemaOptions)
 export class Doctor {
@@ -53,6 +54,25 @@ export class Doctor {
 
    @Prop()
    country: string;
+
+   @Prop({
+      type: [
+         {
+            day: {
+               type: String,
+               enum: Object.values(Days),
+            },
+            startTime: {
+               type: Date,
+            },
+            endTime: {
+               type: Date,
+            },
+         },
+      ],
+      default: [],
+   })
+   availableDays: availableDays[];
 }
 
 export type DoctorDocument = HydratedDocument<Doctor>;
