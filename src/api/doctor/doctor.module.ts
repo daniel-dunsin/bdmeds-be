@@ -5,6 +5,10 @@ import { DoctorController } from './doctor.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Doctor, DoctorSchema } from './schema/doctor.schema';
 import { UserModule } from '../user/user.module';
+import {
+   KycVerification,
+   KycVerificationSchema,
+} from './schema/kyc-verification.schema';
 
 @Module({
    imports: [
@@ -13,6 +17,21 @@ import { UserModule } from '../user/user.module';
             name: Doctor.name,
             useFactory() {
                const schema = DoctorSchema;
+
+               schema.virtual('kycDetails', {
+                  justOne: true,
+                  foreignField: 'doctor',
+                  localField: '_id',
+                  ref: KycVerification.name,
+               });
+
+               return schema;
+            },
+         },
+         {
+            name: KycVerification.name,
+            useFactory() {
+               const schema = KycVerificationSchema;
 
                return schema;
             },

@@ -48,7 +48,7 @@ export class Doctor {
       linkedin: string;
    };
 
-   @Prop()
+   @Prop({ default: false })
    kycVerified: boolean;
 }
 

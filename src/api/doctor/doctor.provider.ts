@@ -54,4 +54,6 @@ export class DoctorProvider {
          data,
       };
    }
+
+   async uploadKycDocuments() {}
 }
