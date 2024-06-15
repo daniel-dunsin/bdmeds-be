@@ -5,7 +5,5 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class DoctorService {
-   constructor(
-      @InjectModel(Doctor.name) doctorService: Model<DoctorDocument>,
-   ) {}
+   constructor(@InjectModel(Doctor.name) _doctorModel: Model<DoctorDocument>) {}
 }
