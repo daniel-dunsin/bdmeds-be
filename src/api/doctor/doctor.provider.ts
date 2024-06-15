@@ -3,12 +3,16 @@ import { DoctorService } from './doctor.service';
 import { Types } from 'mongoose';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
 import { UserService } from '../user/user.service';
+import { KycDocsDto } from './dto/kyc-verification.dto';
+import { UtilService } from 'src/shared/services/utils.service';
+import { FileService } from 'src/shared/services/file.service';
 
 @Injectable()
 export class DoctorProvider {
    constructor(
       private readonly doctorService: DoctorService,
       private readonly userService: UserService,
+      private readonly fileService: FileService,
    ) {}
 
    async getUserDoctor(userId: string) {
@@ -55,5 +59,42 @@ export class DoctorProvider {
       };
    }
 
-   async uploadKycDocuments() {}
+   async updateKycDocuments(updateKycDto: KycDocsDto, userId: string) {
+      const doctor = await this.doctorService.getDoctor({ _id: userId });
+      if (!doctor) throw new NotFoundException('Doctor profile not found');
+      if (doctor.kycVerified)
+         throw new NotFoundException('Your Kyc info has been verified');
+
+      const { url: idDoc, public_id: idDocPublicId } =
+         await this.fileService.uploadResource(updateKycDto.idDoc);
+
+      const { url: professionalCert, public_id: professionalCertPublicId } =
+         await this.fileService.uploadResource(updateKycDto.professionalCert);
+
+      const kyc = await this.doctorService.getDoctorKyc(doctor._id);
+
+      await this.doctorService.updateKyc(
+         {
+            idDoc,
+            idDocPublicId,
+            professionalCert,
+            professionalCertPublicId,
+            idType: updateKycDto.idType,
+         },
+         doctor._id,
+      );
+
+      if (kyc.idDocPublicId) {
+         await this.fileService.deleteResource(kyc.idDocPublicId);
+      }
+      if (kyc.professionalCertPublicId) {
+         await this.fileService.deleteResource(kyc.professionalCertPublicId);
+      }
+
+      // send admin notification
+      return {
+         success: true,
+         message: 'Kyc Docs uploaded successfully',
+      };
+   }
 }

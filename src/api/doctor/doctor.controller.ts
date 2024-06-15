@@ -5,6 +5,7 @@ import { Auth, IsPublic } from 'src/shared/decorators/auth.decorators';
 import { MongoIdPipe } from 'src/core/pipes';
 import { DoctorSpeciality } from './enums';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
+import { KycDocsDto } from './dto/kyc-verification.dto';
 
 @Controller('/doctor')
 @ApiTags('doctor')
@@ -47,6 +48,19 @@ export class DoctorController {
    @IsPublic()
    async getDoctor(@Param('doctorId', MongoIdPipe) doctorId: string) {
       const data = await this.doctorProvider.getDoctor(doctorId);
+
+      return data;
+   }
+
+   @Put('/kyc/verify')
+   async verifyKycInfo(
+      @Auth('_id') userId: string,
+      @Body() updateKycDto: KycDocsDto,
+   ) {
+      const data = await this.doctorProvider.updateKycDocuments(
+         updateKycDto,
+         userId,
+      );
 
       return data;
    }

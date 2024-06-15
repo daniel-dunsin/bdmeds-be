@@ -1,7 +1,7 @@
 import { IsBase64, IsEnum, IsString } from 'src/shared/decorators';
 import { KycIdType } from '../enums';
 
-export class UploadKycDocsDto {
+export class KycDocsDto {
    @IsBase64(false)
    idDoc: string;
 
@@ -10,4 +10,7 @@ export class UploadKycDocsDto {
 
    @IsBase64(false)
    professionalCert: string;
+
+   idDocPublicId: string;
+   professionalCertPublicId: string;
 }
