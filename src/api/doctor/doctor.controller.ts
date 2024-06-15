@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DoctorProvider } from './doctor.provider';
 import { Auth, IsPublic, Roles } from 'src/shared/decorators/auth.decorators';
@@ -85,5 +85,21 @@ export class DoctorController {
          message: 'id types fetched',
          data: Object.values(KycIdType),
       };
+   }
+
+   @Post('/:doctorId/kyc/verify')
+   @Roles([RoleNames.ADMIN])
+   async verifyDoctorKyc(@Param('doctorId') doctorId: string) {
+      const data = await this.doctorProvider.verifyDoctorKyc(doctorId);
+
+      return data;
+   }
+
+   @Post('/:doctorId/kyc/reject')
+   @Roles([RoleNames.ADMIN])
+   async rejectDoctorKyc(@Param('doctorId') doctorId: string) {
+      const data = await this.doctorProvider.rejectDoctorKyc(doctorId);
+
+      return data;
    }
 }
