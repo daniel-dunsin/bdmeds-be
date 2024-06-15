@@ -1,10 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
 import { Types } from 'mongoose';
+import { UpdateDoctorDto } from './dto/update-doctor.dto';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class DoctorProvider {
-   constructor(private readonly doctorService: DoctorService) {}
+   constructor(
+      private readonly doctorService: DoctorService,
+      private readonly userService: UserService,
+   ) {}
 
    async getUserDoctor(userId: string) {
       const data = await this.doctorService.getDoctor({
@@ -34,5 +39,19 @@ export class DoctorProvider {
       };
    }
 
-   async updateDoctor(doctorId: string) {}
+   async updateDoctor(userId: string, updateDoctorDto: UpdateDoctorDto) {
+      const data = await this.doctorService.updateDoctor(
+         { user: userId },
+         updateDoctorDto,
+      );
+
+      if (!data) throw new NotFoundException('Doctor not found');
+      await this.userService.updateUser({ _id: userId }, updateDoctorDto);
+
+      return {
+         success: true,
+         message: 'Doctor Profile Updated',
+         data,
+      };
+   }
 }

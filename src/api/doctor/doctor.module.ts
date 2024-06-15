@@ -4,6 +4,7 @@ import { DoctorProvider } from './doctor.provider';
 import { DoctorController } from './doctor.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Doctor, DoctorSchema } from './schema/doctor.schema';
+import { UserModule } from '../user/user.module';
 
 @Module({
    imports: [
@@ -17,6 +18,7 @@ import { Doctor, DoctorSchema } from './schema/doctor.schema';
             },
          },
       ]),
+      UserModule,
    ],
    providers: [DoctorService, DoctorProvider],
    controllers: [DoctorController],

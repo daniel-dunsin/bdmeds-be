@@ -1,9 +1,10 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DoctorProvider } from './doctor.provider';
 import { Auth, IsPublic } from 'src/shared/decorators/auth.decorators';
 import { MongoIdPipe } from 'src/core/pipes';
 import { DoctorSpeciality } from './enums';
+import { UpdateDoctorDto } from './dto/update-doctor.dto';
 
 @Controller('/doctor')
 @ApiTags('doctor')
@@ -18,14 +19,6 @@ export class DoctorController {
       return data;
    }
 
-   @Get('/:doctorId')
-   @IsPublic()
-   async getDoctor(@Param('doctorId', MongoIdPipe) doctorId: string) {
-      const data = await this.doctorProvider.getDoctor(doctorId);
-
-      return data;
-   }
-
    @Get('/specialities')
    @ApiOperation({ summary: 'get list of specializations' })
    @IsPublic()
@@ -35,5 +28,26 @@ export class DoctorController {
          message: 'specialities fetched',
          data: Object.values(DoctorSpeciality),
       };
+   }
+
+   @Put()
+   async updateDoctor(
+      @Auth('_id') userId: string,
+      @Body() updateDoctorDto: UpdateDoctorDto,
+   ) {
+      const data = await this.doctorProvider.updateDoctor(
+         userId,
+         updateDoctorDto,
+      );
+
+      return data;
+   }
+
+   @Get('/:doctorId')
+   @IsPublic()
+   async getDoctor(@Param('doctorId', MongoIdPipe) doctorId: string) {
+      const data = await this.doctorProvider.getDoctor(doctorId);
+
+      return data;
    }
 }

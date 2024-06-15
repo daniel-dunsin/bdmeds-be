@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Doctor, DoctorDocument } from './schema/doctor.schema';
-import { FilterQuery, Model, UpdateQuery } from 'mongoose';
+import { FilterQuery, Model, QueryOptions, UpdateQuery } from 'mongoose';
 
 @Injectable()
 export class DoctorService {
@@ -17,13 +17,13 @@ export class DoctorService {
    }
 
    async getDoctor(filter: FilterQuery<DoctorDocument>) {
-      const doctor = await this._doctorModel.findOne(filter);
+      const doctor = await this._doctorModel.findOne(filter).populate('user');
 
       return doctor;
    }
 
    async getDoctors(filter: FilterQuery<DoctorDocument>) {
-      const doctors = await this._doctorModel.find(filter);
+      const doctors = await this._doctorModel.find(filter).populate('user');
 
       return doctors;
    }
@@ -31,8 +31,11 @@ export class DoctorService {
    async updateDoctor(
       filter: FilterQuery<DoctorDocument>,
       update: UpdateQuery<DoctorDocument>,
+      options?: QueryOptions<DoctorDocument>,
    ) {
-      const doctor = await this._doctorModel.findOneAndUpdate(filter, update);
+      const doctor = await this._doctorModel
+         .findOneAndUpdate(filter, update, { new: true, ...options })
+         .populate('user');
 
       return doctor;
    }

@@ -10,7 +10,7 @@ export class Doctor {
       type: Types.ObjectId,
       ref: User.name,
    })
-   user: UserDocument | string;
+   user: UserDocument;
 
    @Prop()
    yearsOfExperience: number;
