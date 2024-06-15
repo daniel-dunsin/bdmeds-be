@@ -52,9 +52,6 @@ export class Doctor {
    @Prop({ default: false })
    kycVerified: boolean;
 
-   @Prop()
-   country: string;
-
    @Prop({
       type: [
          {

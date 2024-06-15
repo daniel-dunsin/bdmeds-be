@@ -4,6 +4,7 @@ import { DbMixins, schemaOptions } from 'src/shared/constants/db.const';
 import DEFAULT_MATCHERS from 'src/shared/constants/regex.const';
 import { Gender, RoleNames } from '../enums';
 import DEFAULT_IMAGES from 'src/shared/constants/images.const';
+import { Address, AddressSchema } from './address.schema';
 
 @Schema(schemaOptions)
 export class User extends DbMixins {
@@ -43,6 +44,12 @@ export class User extends DbMixins {
 
    @Prop({ type: String, required: true, enum: Object.values(RoleNames) })
    role: RoleNames;
+
+   @Prop({
+      type: AddressSchema,
+      required: false,
+   })
+   address: Address;
 }
 
 export type UserDocument = HydratedDocument<User>;

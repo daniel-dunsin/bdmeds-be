@@ -30,6 +30,17 @@ export class AvailableDay {
    endTime: Date;
 }
 
+export class Address {
+   @IsString(false)
+   state: string;
+
+   @IsString(false)
+   city: string;
+
+   @IsString(false)
+   country: string;
+}
+
 export class UpdateDoctorDto {
    @IsString(true)
    firstName?: string;
@@ -61,4 +72,9 @@ export class UpdateDoctorDto {
    @Type(() => AvailableDay)
    @IsOptional()
    availableDays: AvailableDay[];
+
+   @ApiProperty({ type: Address })
+   @IsOptional()
+   @ValidateNested()
+   address: Address;
 }
