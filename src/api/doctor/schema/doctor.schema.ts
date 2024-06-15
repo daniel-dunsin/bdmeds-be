@@ -47,6 +47,9 @@ export class Doctor {
       whatsapp: string;
       linkedin: string;
    };
+
+   @Prop()
+   kycVerified: boolean;
 }
 
 export type DoctorDocument = HydratedDocument<Doctor>;
