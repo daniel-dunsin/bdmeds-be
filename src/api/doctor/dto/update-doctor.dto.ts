@@ -26,6 +26,9 @@ export class UpdateDoctorDto {
    @IsString(true)
    lastName?: string;
 
+   @IsString(true)
+   country?: string;
+
    @IsEnum(Gender, true)
    gender?: Gender;
 
