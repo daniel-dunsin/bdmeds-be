@@ -116,6 +116,11 @@ export class DoctorProvider {
          { kycVerified: true },
       );
 
+      await this.doctorService.updateKyc(
+         { status: KycStatus.SUCCESSFUL },
+         doctorId,
+      );
+
       return {
          success: true,
          message: 'Kyc Verified',

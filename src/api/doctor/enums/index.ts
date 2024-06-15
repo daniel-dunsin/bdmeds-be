@@ -26,6 +26,6 @@ export enum Days {
 
 export enum KycStatus {
    PENDING = 'pending',
-   SUCCESS = 'success',
+   SUCCESSFUL = 'successful',
    FAILED = 'failed',
 }

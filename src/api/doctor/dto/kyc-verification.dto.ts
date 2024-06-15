@@ -3,15 +3,15 @@ import { KycIdType, KycStatus } from '../enums';
 
 export class KycDocsDto {
    @IsBase64(false)
-   idDoc: string;
+   idDoc?: string;
 
    @IsEnum(KycIdType, false)
-   idType: KycIdType;
+   idType?: KycIdType;
 
    @IsBase64(false)
-   professionalCert: string;
+   professionalCert?: string;
 
-   idDocPublicId: string;
-   professionalCertPublicId: string;
-   status: KycStatus;
+   idDocPublicId?: string;
+   professionalCertPublicId?: string;
+   status?: KycStatus;
 }
