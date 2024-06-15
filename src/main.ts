@@ -54,6 +54,10 @@ async function bootstrap() {
    const swaggerDoc = SwaggerModule.createDocument(app, swaggerConfig);
    SwaggerModule.setup('/v1/docs', app, swaggerDoc, { useGlobalPrefix: true });
 
+   app.use('api/v1/health-check', (res: express.Response) => {
+      res.json({ status: 'OK' });
+   });
+
    const configService = app.get(ConfigService);
    const PORT = configService.get('PORT') || 3000;
 
