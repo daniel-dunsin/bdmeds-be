@@ -14,7 +14,7 @@ import { User, UserDocument } from 'src/api/user/schema/user.schema';
 import { JwtType } from '../enums/jwt.enum';
 import { Reflector } from '@nestjs/core';
 import { IsPublic, Roles } from 'src/shared/decorators/auth.decorators';
-import { Roles as IRoles } from 'src/api/user/enums';
+import { RoleNames } from 'src/api/user/enums';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -34,7 +34,10 @@ export class AuthGuard implements CanActivate {
       const user = await this.validateToken(req);
       req['user'] = user;
 
-      const roles: IRoles[] = this.reflector.get(Roles, context.getHandler());
+      const roles: RoleNames[] = this.reflector.get(
+         Roles,
+         context.getHandler(),
+      );
 
       if (roles && roles.length > 0) {
          if (!roles.includes(user.role)) {

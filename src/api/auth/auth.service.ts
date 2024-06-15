@@ -27,7 +27,7 @@ import { SignInDto } from './dto/sign-in.dto';
 import { UserDocument } from '../user/schema/user.schema';
 import { JwtService } from '@nestjs/jwt';
 import { JwtType } from './enums/jwt.enum';
-import { Roles } from '../user/enums';
+import { RoleNames } from '../user/enums';
 import { DoctorService } from '../doctor/doctor.service';
 import { PatientService } from '../patient/patient.service';
 
@@ -117,7 +117,7 @@ export class AuthService {
    }
 
    async onBoardPatient(onBoardPatientDto: OnBoardPatientDto) {
-      onBoardPatientDto.role = Roles.PATIENT;
+      onBoardPatientDto.role = RoleNames.PATIENT;
       const user = await this.signUp(onBoardPatientDto);
 
       await this.patientService.createPatient({ user: user._id });
@@ -129,7 +129,7 @@ export class AuthService {
    }
 
    async onBoardDoctor(onBoardDoctorDto: OnBoardDoctorDto) {
-      onBoardDoctorDto.role = Roles.DOCTOR;
+      onBoardDoctorDto.role = RoleNames.DOCTOR;
       const user = await this.signUp(onBoardDoctorDto);
 
       await this.doctorService.createDoctor({

@@ -5,9 +5,9 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
-import { Roles as IRoles } from 'src/api/user/enums';
+import { RoleNames } from 'src/api/user/enums';
 
-export const Roles = Reflector.createDecorator<IRoles[]>();
+export const Roles = Reflector.createDecorator<RoleNames[]>();
 
 export const IsPublic = Reflector.createDecorator();
 

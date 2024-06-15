@@ -1,11 +1,12 @@
 import { Body, Controller, Get, Param, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DoctorProvider } from './doctor.provider';
-import { Auth, IsPublic } from 'src/shared/decorators/auth.decorators';
+import { Auth, IsPublic, Roles } from 'src/shared/decorators/auth.decorators';
 import { MongoIdPipe } from 'src/core/pipes';
 import { DoctorSpeciality, KycIdType } from './enums';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
 import { KycDocsDto } from './dto/kyc-verification.dto';
+import { RoleNames } from '../user/enums';
 
 @Controller('/doctor')
 @ApiTags('doctor')
@@ -14,6 +15,7 @@ export class DoctorController {
    constructor(private readonly doctorProvider: DoctorProvider) {}
 
    @Get('/user')
+   @Roles([RoleNames.DOCTOR])
    async getUserDoctor(@Auth('_id') userId: string) {
       const data = await this.doctorProvider.getUserDoctor(userId);
 
@@ -32,6 +34,7 @@ export class DoctorController {
    }
 
    @Put()
+   @Roles([RoleNames.DOCTOR])
    async updateDoctor(
       @Auth('_id') userId: string,
       @Body() updateDoctorDto: UpdateDoctorDto,
@@ -52,8 +55,9 @@ export class DoctorController {
       return data;
    }
 
-   @Put('/kyc/verify')
-   async verifyKycInfo(
+   @Put('/kyc/update')
+   @Roles([RoleNames.DOCTOR])
+   async updateKycInfo(
       @Auth('_id') userId: string,
       @Body() updateKycDto: KycDocsDto,
    ) {
@@ -66,6 +70,7 @@ export class DoctorController {
    }
 
    @Get('/:doctorId/kyc')
+   @Roles([RoleNames.DOCTOR, RoleNames.ADMIN])
    async getDoctorKyc(@Param('doctorId', MongoIdPipe) doctorId: string) {
       const data = await this.doctorProvider.getDoctorKyc(doctorId);
 

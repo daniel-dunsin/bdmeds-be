@@ -3,7 +3,7 @@ export enum Gender {
    FEMALE = 'female',
 }
 
-export enum Roles {
+export enum RoleNames {
    PATIENT = 'patient',
    DOCTOR = 'doctor',
    ADMIN = 'admin',
