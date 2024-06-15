@@ -10,6 +10,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guards/auth.guard';
+import { DoctorModule } from '../doctor/doctor.module';
+import { PatientModule } from '../patient/patient.module';
 
 @Module({
    imports: [
@@ -30,13 +32,18 @@ import { AuthGuard } from './guards/auth.guard';
             return {
                global: true,
                signOptions: { expiresIn: '1d' },
-               secret: Buffer.from(configService.get<string>('JWT_SECRET'), 'base64').toString('ascii'),
+               secret: Buffer.from(
+                  configService.get<string>('JWT_SECRET'),
+                  'base64',
+               ).toString('ascii'),
             };
          },
       }),
       TokenModule,
       SharedModule,
       UserModule,
+      DoctorModule,
+      PatientModule,
    ],
    providers: [AuthService, AuthGuard],
    controllers: [AuthController],

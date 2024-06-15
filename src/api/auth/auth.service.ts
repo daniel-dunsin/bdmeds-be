@@ -28,6 +28,8 @@ import { UserDocument } from '../user/schema/user.schema';
 import { JwtService } from '@nestjs/jwt';
 import { JwtType } from './enums/jwt.enum';
 import { Roles } from '../user/enums';
+import { DoctorService } from '../doctor/doctor.service';
+import { PatientService } from '../patient/patient.service';
 
 @Injectable()
 export class AuthService {
@@ -39,6 +41,8 @@ export class AuthService {
       private readonly mailService: MailService,
       private readonly configService: ConfigService,
       private readonly jwtService: JwtService,
+      private readonly doctorService: DoctorService,
+      private readonly patientService: PatientService,
    ) {}
 
    private async auth(user: UserDocument) {
@@ -115,7 +119,8 @@ export class AuthService {
    async onBoardPatient(onBoardPatientDto: OnBoardPatientDto) {
       onBoardPatientDto.role = Roles.PATIENT;
       const user = await this.signUp(onBoardPatientDto);
-      //  create patient profile;
+
+      await this.patientService.createPatient({ user: user._id });
 
       return {
          success: true,
@@ -126,7 +131,12 @@ export class AuthService {
    async onBoardDoctor(onBoardDoctorDto: OnBoardDoctorDto) {
       onBoardDoctorDto.role = Roles.DOCTOR;
       const user = await this.signUp(onBoardDoctorDto);
-      // create doctor profile;
+
+      await this.doctorService.createDoctor({
+         yearsOfExperience: onBoardDoctorDto.yearsOfExperience,
+         speciality: onBoardDoctorDto.speciality,
+         user: user._id,
+      });
 
       return {
          success: true,

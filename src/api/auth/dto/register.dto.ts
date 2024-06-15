@@ -1,4 +1,5 @@
 import { MinLength } from 'class-validator';
+import { DoctorSpeciality } from 'src/api/doctor/enums';
 import { Gender, Roles } from 'src/api/user/enums';
 import { IsEmail, IsEnum, IsString } from 'src/shared/decorators';
 
@@ -29,5 +30,5 @@ export class OnBoardPatientDto extends RegisterDto {}
 
 export class OnBoardDoctorDto extends RegisterDto {
    yearsOfExperience: number;
-   specialization: string;
+   speciality: DoctorSpeciality;
 }

@@ -13,7 +13,7 @@ export class Doctor {
    user: UserDocument | string;
 
    @Prop()
-   experienceYears: number;
+   yearsOfExperience: number;
 
    @Prop({
       type: String,
