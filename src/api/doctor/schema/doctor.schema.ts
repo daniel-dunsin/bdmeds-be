@@ -55,6 +55,9 @@ export class Doctor {
    @Prop({ default: false })
    kycVerified: boolean;
 
+   @Prop({ default: true })
+   isAvailable: boolean;
+
    @Prop({
       type: [
          {
