@@ -34,26 +34,25 @@
 
             <div class='main'>
                <!-- Heading -->
-               <h1>Appointment Rescheduled</h1>
-               <p>Dear Dr. {{doctorName}},</p>
+               <h1>Appointment Cancelled</h1>
+               <p>Dear {{receiverName}},</p>
                <p>You appointment with
-                  {{patientName}}
-                  has been rescheduled from
-                  {{prevStartTime}}
-                  -
-                  {{prevEndTime}}
+                  {{triggererName}}
                   on
-                  {{prevAppointmentDate}}
-                  to
-                  <b>{{newStartTime}}
-                     -
-                     {{newEndTime}}
-                     on
-                     {{newAppointmentDate}}
-                  </b>
+                  {{startTime}}
+                  -
+                  {{endTime}},
+                  {{appointmentDate}}
+                  has been cancelled
+
                </p>
 
                <p>Please log in to your account to view more details and manage your appointments.</p>
+               <p>
+                  <b>N.B: When appointments are cancelled, the patient is refunded the amount they had paid
+                     for the session
+                  </b>
+               </p>
                <p>Best Regards,<br />BdMeds 🏥</p>
             </div>
 

@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Auth, Roles } from 'src/shared/decorators/auth.decorators';
 import { UserDocument } from '../user/schema/user.schema';
-import { BookSessionDto } from './dto/book-appointment.dto';
+import { BookSessionDto, SessionDto } from './dto/book-appointment.dto';
 import { AppointmentProvider } from './appointment.provider';
 import { RoleNames } from '../user/enums';
 import { MongoIdPipe } from 'src/core/pipes';
@@ -51,6 +51,26 @@ export class AppointmentController {
    @Roles([RoleNames.PATIENT])
    async getUserPatientAppointments(@Auth('_id') userId: string) {
       const data = await this.appointmentProvider.getUserPatientAppointments(userId);
+
+      return data;
+   }
+
+   @Put('/:appointmentId/reschedule')
+   @Roles([RoleNames.DOCTOR, RoleNames.PATIENT])
+   async rescheduleAppointment(
+      @Body() sessionDto: SessionDto,
+      @Param('appointmentId') appointmentId: string,
+      @Auth() user: UserDocument,
+   ) {
+      const data = await this.appointmentProvider.rescheduleAppointment(sessionDto, appointmentId, user);
+
+      return data;
+   }
+
+   @Put('/:appointmentId/cancel')
+   @Roles([RoleNames.DOCTOR, RoleNames.PATIENT])
+   async cancelAppointment(@Param('appointmentId') appointmentId: string, @Auth() user: UserDocument) {
+      const data = await this.appointmentProvider.cancelAppointment(appointmentId, user);
 
       return data;
    }

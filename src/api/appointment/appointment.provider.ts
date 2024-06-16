@@ -42,6 +42,7 @@ export class AppointmentProvider {
                endTime: { $lte: sessionDto.endTime },
             },
          ],
+         status: AppointmentStatus.PENDING,
       };
 
       const patientPrevAppointment = await this.appointmentService.getAppointment({
@@ -202,6 +203,45 @@ export class AppointmentProvider {
          success: true,
          message: 'appointment rescheduled',
          data,
+      };
+   }
+
+   async cancelAppointment(appointmentId: string, user: UserDocument) {
+      const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
+
+      if (appointment.status != AppointmentStatus.PENDING)
+         throw new BadRequestException('Only pending appointments can be rescheduled');
+
+      if (
+         String(appointment.doctor.user._id) != String(user._id) &&
+         String(appointment.patient.user._id) != String(user._id)
+      ) {
+         throw new BadRequestException('Only the doctor/patient of this appointment can reschedule it');
+      }
+
+      appointment.status = AppointmentStatus.CANCELLED;
+      await appointment.save();
+
+      const triggeredByPatient = user.role === RoleNames.PATIENT;
+      const triggerer = triggeredByPatient ? appointment.patient.user : appointment.doctor.user;
+      const receiver = triggeredByPatient ? appointment.doctor.user : appointment.patient.user;
+
+      await this.mailService.sendMail({
+         to: triggeredByPatient ? appointment.doctor.user.email : appointment.patient.user.email,
+         subject: 'BDMeds: Cancelled Appoints',
+         template: 'appointment-cancelled',
+         context: {
+            receiverName: `${receiver.firstName} ${receiver.firstName}`,
+            triggererName: `${triggerer.firstName} ${triggerer.firstName}`,
+            appointmentDate: format(appointment.appointmentDate, 'do, MMM yyyy'),
+            startTime: format(appointment.startTime, 'h:mm a..aa'),
+            endTime: format(appointment.endTime, 'h:mm a..aa'),
+         },
+      });
+
+      return {
+         success: true,
+         message: 'Appointment cancelled successfully',
       };
    }
 }
