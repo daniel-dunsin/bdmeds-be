@@ -19,7 +19,6 @@ import { SharedModule } from 'src/shared/shared.module';
             },
          },
       ]),
-
       DoctorModule,
       PatientModule,
       SharedModule,

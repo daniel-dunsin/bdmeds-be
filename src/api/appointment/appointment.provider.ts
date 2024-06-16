@@ -61,10 +61,6 @@ export class AppointmentProvider {
    }
 
    async getDoctorAppointments(doctorId: string) {
-      const doctor = await this.doctorService.getDoctor({ _id: doctorId });
-
-      if (!doctor) throw new NotFoundException('Doctor not found!');
-
       const data = await this.appointmentService.getAppointments({
          doctor: new Types.ObjectId(doctorId),
       });
@@ -79,16 +75,31 @@ export class AppointmentProvider {
    async getUserDoctorAppointments(userId: string) {
       const doctor = await this.doctorService.getDoctor({ user: new Types.ObjectId(userId) });
 
-      if (!doctor) throw new NotFoundException('Doctor not found!');
+      if (!doctor) throw new NotFoundException('Doctor not found');
 
+      return await this.getDoctorAppointments(doctor._id);
+   }
+
+   async getPatientAppointments(patientId: string) {
       const data = await this.appointmentService.getAppointments({
-         doctor: doctor._id,
+         patient: new Types.ObjectId(patientId),
       });
 
       return {
          success: true,
-         message: 'Appointments fetched successfully',
+         messsage: 'Appointments fetched successfully',
          data,
       };
    }
+
+   async getUserPatientAppointments(userId: string) {
+      const patient = await this.patientService.getPatient({ user: new Types.ObjectId(userId) });
+
+      if (!patient) throw new NotFoundException('Patient not found');
+
+      return await this.getPatientAppointments(patient._id);
+   }
+
+   // reschedule
+   // book session validation
 }
