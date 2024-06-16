@@ -1,12 +1,4 @@
-import {
-   Body,
-   Controller,
-   Delete,
-   Get,
-   Param,
-   Post,
-   Put,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PatientProvider } from './patient.provider';
 import { Auth, Roles } from 'src/shared/decorators/auth.decorators';
@@ -23,6 +15,7 @@ export class PatientController {
    @Get('/user')
    @Roles([RoleNames.PATIENT])
    async getUserPatient(@Auth('_id') userId: string) {
+      console.log(userId);
       const data = await this.patientProvider.getUserPatient(userId);
 
       return data;
@@ -37,24 +30,15 @@ export class PatientController {
 
    @Put()
    @Roles([RoleNames.PATIENT])
-   async updatePatient(
-      @Auth('_id') userId: string,
-      @Body() updatePatientDto: UpdatePatientDto,
-   ) {
-      const data = await this.patientProvider.updatePatient(
-         updatePatientDto,
-         userId,
-      );
+   async updatePatient(@Auth('_id') userId: string, @Body() updatePatientDto: UpdatePatientDto) {
+      const data = await this.patientProvider.updatePatient(updatePatientDto, userId);
 
       return data;
    }
 
    @Post('/favourite/doctor/:doctorId')
    @Roles([RoleNames.PATIENT])
-   async addFavDoc(
-      @Auth('_id') userId: string,
-      @Param('doctorId') doctorId: string,
-   ) {
+   async addFavDoc(@Auth('_id') userId: string, @Param('doctorId') doctorId: string) {
       const data = await this.patientProvider.addFavDoc(doctorId, userId);
 
       return data;
@@ -62,10 +46,7 @@ export class PatientController {
 
    @Delete('/favourite/doctor/:doctorId')
    @Roles([RoleNames.PATIENT])
-   async removeFavDoc(
-      @Auth('_id') userId: string,
-      @Param('doctorId') doctorId: string,
-   ) {
+   async removeFavDoc(@Auth('_id') userId: string, @Param('doctorId') doctorId: string) {
       const data = await this.patientProvider.removeFavDoc(doctorId, userId);
 
       return data;

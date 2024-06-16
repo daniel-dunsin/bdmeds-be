@@ -1,3 +1,4 @@
 [*]
+max_line_length = 110
 quote_type = single
 indent_size = 3

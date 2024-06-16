@@ -35,16 +35,23 @@
                />
             </div>
 
-            <!-- Email Main -->
             <div class='main'>
                <!-- Heading -->
-               <h1>Account Verification</h1>
-
-               <p>Dear {{firstName}},</p>
-
-               Welcome to BdMeds, to verify your email, kindly click on this
-               <a href={{link}}>link</a>
-
+               <h1>New Appointment Booking</h1>
+               <p>Dear Dr. {{doctorName}},</p>
+               <p>We are pleased to inform you that a new
+                  {{appointmentMode}}
+                  appointment has been booked with you.</p>
+               <p><strong>Patient Name:</strong> {{patientName}}</p>
+               <p><strong>Date and Time:</strong>
+                  {{appointmentDate}}
+                  at
+                  {{startTime}}
+                  {{endTime}}</p>
+               <p><strong>Email: </strong> {{patientEmail}}</p>
+               <p><strong>Phone Number: </strong> {{patientPhoneNumber}}</p>
+               <p>Please log in to your account to view more details and manage
+                  your appointments.</p>
                <p>Best Regards,<br />BdMeds 🏥</p>
             </div>
 

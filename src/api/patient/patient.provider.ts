@@ -67,11 +67,7 @@ export class PatientProvider {
       });
 
       if (!data) throw new NotFoundException('Patient not found');
-      if (
-         !data.favouriteDoctors.find(
-            (doc: DoctorDocument) => String(doc._id) === String(doctorId),
-         )
-      ) {
+      if (!data.favouriteDoctors.find((doc: DoctorDocument) => String(doc._id) === String(doctorId))) {
          data.favouriteDoctors.push(doctorId);
          await data.save();
       }
