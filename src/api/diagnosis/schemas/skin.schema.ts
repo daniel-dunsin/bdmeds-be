@@ -10,6 +10,21 @@ export class SkinMetrics {
       required: true,
    })
    patient: PatientDocument | string;
+
+   @Prop()
+   skinHealthStatus: string; // Descriptive
+
+   @Prop()
+   lesionCount: number; // Count
+
+   @Prop()
+   lesionSize: number; // Millimeters (mm)
+
+   @Prop()
+   allergyTestResults: number; // Millimeters (mm)
+
+   @Prop()
+   biopsyResults: string; // Descriptive
 }
 
 export type SkinMetricsDocument = HydratedDocument<SkinMetrics>;
