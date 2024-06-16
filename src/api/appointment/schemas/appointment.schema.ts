@@ -2,7 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { Patient, PatientDocument } from 'src/api/patient/schema/patient.schema';
 import { schemaOptions } from 'src/shared/constants/db.const';
-import { TempPatient, TempPatientSchema } from './temp-patient.schema';
 import { Doctor, DoctorDocument } from 'src/api/doctor/schema/doctor.schema';
 import { AppointmentMode, AppointmentStatus } from '../enums';
 import { Departments } from 'src/api/doctor/enums';
@@ -15,12 +14,6 @@ export class Appointment {
       required: false,
    })
    patient: PatientDocument;
-
-   @Prop({
-      type: TempPatientSchema,
-      required: false,
-   })
-   tempPatient: TempPatient;
 
    @Prop({
       type: Types.ObjectId,

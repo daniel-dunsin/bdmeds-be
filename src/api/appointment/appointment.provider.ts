@@ -82,6 +82,7 @@ export class AppointmentProvider {
       const data = await this.appointmentService.createAppointment({
          ...bookSessionDto,
          mode: AppointmentMode.PHYSICAL,
+         department: doctor.department,
          doctor: doctor._id,
          patient: patient._id,
       });

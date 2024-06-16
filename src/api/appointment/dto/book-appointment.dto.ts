@@ -16,7 +16,4 @@ export class SessionDto {
 export class BookSessionDto extends SessionDto {
    @IsEnum(AppointmentMode, false)
    mode: AppointmentMode;
-
-   @IsEnum(Departments, false)
-   department: Departments;
 }
