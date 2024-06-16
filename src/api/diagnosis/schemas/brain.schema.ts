@@ -10,6 +10,31 @@ export class BrainMetrics {
       required: true,
    })
    patient: PatientDocument | string;
+
+   // description
+   @Prop()
+   brainHealthStatus: string;
+
+   // Hertz(Hz)
+   @Prop()
+   eegResults: number;
+
+   // Points (Pts)
+   @Prop({
+      type: {
+         lower: {
+            type: Number,
+         },
+         upper: {
+            type: Number,
+         },
+      },
+      required: false,
+   })
+   cognitiveFunctionTestScore: {
+      lower: number;
+      upper: number;
+   };
 }
 
 export type BrainMetricsDocument = HydratedDocument<BrainMetrics>;
