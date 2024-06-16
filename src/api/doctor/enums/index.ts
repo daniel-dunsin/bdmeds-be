@@ -3,10 +3,11 @@ export enum DoctorSpeciality {
    DENTIST = 'dentist',
    NEUROLOGIST = 'neurologist',
    ORTHOPEDIC = 'orthopedic',
-   UROLOGIST = 'urologist',
    OPTOMETRIST = 'optometrist',
    PYSCHOTHERAPIST = 'pyschotherapist',
-   LAB_SCIENTIST = 'lab scientist',
+   NEPHROLOGIST = 'nephrologist',
+   HEPATOLOGIST = 'hepatologist',
+   DERMATOLOGIST = 'dermatolgist',
 }
 
 export enum KycIdType {
