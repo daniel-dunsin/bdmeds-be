@@ -22,6 +22,18 @@ export enum Departments {
    DERMATOLOGY = 'Dermatology (Skin)',
 }
 
+export const SPECIALITY_TO_DEPARTMENT: { [key in DoctorSpeciality]: Departments } = {
+   [DoctorSpeciality.CARDIOLOGIST]: Departments.CARDIOLOGY,
+   [DoctorSpeciality.DENTIST]: Departments.DENTISTRY,
+   [DoctorSpeciality.NEUROLOGIST]: Departments.NEUROLOGY,
+   [DoctorSpeciality.ORTHOPEDIC]: Departments.ORTHOPEDICS,
+   [DoctorSpeciality.OPTOMETRIST]: Departments.OPTOMETRY,
+   [DoctorSpeciality.PYSCHOTHERAPIST]: Departments.PSYCHOTHERAPY,
+   [DoctorSpeciality.NEPHROLOGIST]: Departments.NEPHROLOGY,
+   [DoctorSpeciality.HEPATOLOGIST]: Departments.HEPATOLOGY,
+   [DoctorSpeciality.DERMATOLOGIST]: Departments.DERMATOLOGY,
+};
+
 export enum KycIdType {
    NIC = 'National Identification Card',
    INTERNATIONAL_PASSPORT = 'International Passport',

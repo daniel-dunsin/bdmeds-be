@@ -5,11 +5,9 @@ import { DoctorController } from './doctor.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Doctor, DoctorSchema } from './schema/doctor.schema';
 import { UserModule } from '../user/user.module';
-import {
-   KycVerification,
-   KycVerificationSchema,
-} from './schema/kyc-verification.schema';
+import { KycVerification, KycVerificationSchema } from './schema/kyc-verification.schema';
 import { SharedModule } from 'src/shared/shared.module';
+import { SPECIALITY_TO_DEPARTMENT } from './enums';
 
 @Module({
    imports: [
@@ -18,6 +16,13 @@ import { SharedModule } from 'src/shared/shared.module';
             name: Doctor.name,
             useFactory() {
                const schema = DoctorSchema;
+
+               schema.pre('save', function (next) {
+                  if (this.isModified('speciality')) {
+                     this.department = SPECIALITY_TO_DEPARTMENT[this.speciality];
+                  }
+                  next();
+               });
 
                schema.virtual('kycDetails', {
                   justOne: true,

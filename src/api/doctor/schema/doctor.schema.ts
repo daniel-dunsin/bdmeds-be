@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { User, UserDocument } from 'src/api/user/schema/user.schema';
 import { schemaOptions } from 'src/shared/constants/db.const';
-import { Days, DoctorSpeciality } from '../enums';
+import { Days, Departments, DoctorSpeciality } from '../enums';
 import { availableDays } from '../interfaces';
 
 @Schema(schemaOptions)
@@ -21,6 +21,12 @@ export class Doctor {
       enum: Object.values(DoctorSpeciality),
    })
    speciality: DoctorSpeciality;
+
+   @Prop({
+      type: String,
+      enum: Object.values(Departments),
+   })
+   department: Departments;
 
    @Prop()
    qualifications: string[];
