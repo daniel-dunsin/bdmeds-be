@@ -12,6 +12,9 @@ export class HeartMetrics {
    patient: PatientDocument | string;
 
    @Prop()
+   heartHealthStatus: string;
+
+   @Prop()
    heartRate: number; // in bpm
 
    @Prop()

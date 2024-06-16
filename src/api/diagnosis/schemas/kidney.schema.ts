@@ -10,6 +10,24 @@ export class KidneyMetrics {
       required: true,
    })
    patient: PatientDocument | string;
+
+   @Prop()
+   kidneyHealthStatus: string; // Descriptive
+
+   @Prop()
+   creatinine: number; // Milligrams per deciliter (mg/dL)
+
+   @Prop()
+   BUN: number; // Milligrams per deciliter (mg/dL)
+
+   @Prop()
+   urineProtein: number; // Milligrams per deciliter (mg/dL)
+
+   @Prop()
+   dialysisHours: number; // Hours
+
+   @Prop()
+   dialysisFrequency: number; // Frequency
 }
 
 export type KidneyMetricsDocument = HydratedDocument<KidneyMetrics>;
