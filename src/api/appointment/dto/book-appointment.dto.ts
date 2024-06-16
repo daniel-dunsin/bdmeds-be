@@ -1,4 +1,4 @@
-import { IsDate } from 'src/shared/decorators';
+import { IsDate, IsEnum } from 'src/shared/decorators';
 import { AppointmentMode } from '../enums';
 
 export class BookSessionDto {
@@ -10,8 +10,7 @@ export class BookSessionDto {
 
    @IsDate(false)
    endTime: Date;
+
+   @IsEnum(AppointmentMode, false)
+   mode: AppointmentMode;
 }
-
-export class BookPhysicalSessionDto extends BookSessionDto {}
-
-export class BookOnlineSessionDto extends BookSessionDto {}
