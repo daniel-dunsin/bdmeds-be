@@ -10,6 +10,18 @@ export class EyesMetrics {
       required: true,
    })
    patient: PatientDocument | string;
+
+   @Prop()
+   visionTestResult: string; // Visual acuity (e.g., 20/20)
+
+   @Prop()
+   ocularPressure: number; // mmHg
+
+   @Prop()
+   contactLensBaseCurve: number; // Millimeters (mm)
+
+   @Prop()
+   contactLensDiameter: number; // Millimeters (mm)
 }
 
 export type EyesMetricsDocument = HydratedDocument<EyesMetrics>;
