@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { UserDocument } from './schema/user.schema';
 import { UtilService } from 'src/shared/services/utils.service';
 import { FileService } from 'src/shared/file/file.service';
+import DEFAULT_IMAGES from 'src/shared/constants/images.const';
 
 @Injectable()
 export class UserProvider {
@@ -52,6 +53,30 @@ export class UserProvider {
       return {
          success: true,
          message: 'deleted',
+      };
+   }
+
+   async removeProfilePicture(userId: string) {
+      let data = await this.userService.getUser({ _id: userId });
+
+      if (!data) {
+         throw new NotFoundException('User not found');
+      }
+
+      const previousId = data.profilePictureId;
+
+      data.profilePicture = DEFAULT_IMAGES.profilePicture;
+      data.profilePictureId = '';
+      data = await data.save();
+
+      if (previousId) {
+         await this.fileService.deleteResource(previousId);
+      }
+
+      return {
+         success: true,
+         message: 'profile picture updated',
+         data,
       };
    }
 }

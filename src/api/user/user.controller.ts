@@ -34,6 +34,13 @@ export class UserController {
       return data;
    }
 
+   @Delete('/profile-picture')
+   async deleteProfilePicture(@Auth('_id') userId: string) {
+      const data = await this.userProvider.removeProfilePicture(userId);
+
+      return data;
+   }
+
    @Delete('email')
    @ApiBody({
       schema: { type: 'object', properties: { email: { type: 'string' } } },
