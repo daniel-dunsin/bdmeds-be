@@ -1,13 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { BookSessionDto } from './dto/book-appointment.dto';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BookSessionDto, SessionDto } from './dto/book-appointment.dto';
 import { User, UserDocument } from '../user/schema/user.schema';
 import { AppointmentService } from './appointment.service';
 import { DoctorService } from '../doctor/doctor.service';
 import { PatientService } from '../patient/patient.service';
-import { Types } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 import { AppointmentMode } from './enums';
 import { MailService } from 'src/shared/mail/mail.service';
-import { format } from 'date-fns';
+import { endOfDay, format, startOfDay } from 'date-fns';
+import { AppointmentDocument } from './schemas/appointment.schema';
 
 @Injectable()
 export class AppointmentProvider {
@@ -17,6 +18,53 @@ export class AppointmentProvider {
       private readonly patientService: PatientService,
       private readonly mailService: MailService,
    ) {}
+
+   private async validatePatientAndDocAvailaibility(
+      sessionDto: SessionDto,
+      doctorId: string,
+      patientId: string,
+      isPatient: boolean,
+   ) {
+      const query: FilterQuery<AppointmentDocument> = {
+         appointmentDate: {
+            $gte: startOfDay(sessionDto.appointmentDate),
+            $lte: endOfDay(sessionDto.appointmentDate),
+         },
+         $or: [
+            {
+               startTime: { $lte: sessionDto.endTime },
+               endTime: { $gte: sessionDto.startTime },
+            },
+
+            {
+               startTime: { $gte: sessionDto.startTime },
+               endTime: { $lte: sessionDto.endTime },
+            },
+         ],
+      };
+
+      const patientPrevAppointment = await this.appointmentService.getAppointment({
+         patient: new Types.ObjectId(patientId),
+         ...query,
+      });
+
+      if (patientPrevAppointment) {
+         throw new BadRequestException(
+            `${isPatient ? 'You' : 'This patient'} already have an appointment from ${format(sessionDto.startTime, 'h:mm a..aa')} to ${format(sessionDto.endTime, 'h:mm a..aa')} on ${format(sessionDto.appointmentDate, 'do, MMM yyyy')}, hence, you can select a time within this time interval`,
+         );
+      }
+
+      const doctorPrevAppointment = await this.appointmentService.getAppointment({
+         doctor: new Types.ObjectId(doctorId),
+         ...query,
+      });
+
+      if (doctorPrevAppointment) {
+         throw new BadRequestException(
+            `${isPatient ? 'This doctor' : 'You'} already have an appointment from ${format(sessionDto.startTime, 'h:mm a..aa')} to ${format(sessionDto.endTime, 'h:mm a..aa')} on ${format(sessionDto.appointmentDate, 'do, MMM yyyy')}, hence, you can select a time within this time interval`,
+         );
+      }
+   }
 
    async bookSession(bookSessionDto: BookSessionDto, doctorId: string, user: UserDocument) {
       const doctor = await this.doctorService.getDoctor({ _id: doctorId });
