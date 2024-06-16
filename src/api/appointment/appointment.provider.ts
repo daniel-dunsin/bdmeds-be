@@ -59,4 +59,36 @@ export class AppointmentProvider {
          data,
       };
    }
+
+   async getDoctorAppointments(doctorId: string) {
+      const doctor = await this.doctorService.getDoctor({ _id: doctorId });
+
+      if (!doctor) throw new NotFoundException('Doctor not found!');
+
+      const data = await this.appointmentService.getAppointments({
+         doctor: new Types.ObjectId(doctorId),
+      });
+
+      return {
+         success: true,
+         message: 'Appointments fetched successfully',
+         data,
+      };
+   }
+
+   async getUserDoctorAppointments(userId: string) {
+      const doctor = await this.doctorService.getDoctor({ user: new Types.ObjectId(userId) });
+
+      if (!doctor) throw new NotFoundException('Doctor not found!');
+
+      const data = await this.appointmentService.getAppointments({
+         doctor: doctor._id,
+      });
+
+      return {
+         success: true,
+         message: 'Appointments fetched successfully',
+         data,
+      };
+   }
 }
