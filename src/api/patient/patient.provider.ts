@@ -91,4 +91,28 @@ export class PatientProvider {
          message: 'doctor removed from favourites',
       };
    }
+
+   async getFavDoctors(patientId: string) {
+      const data = await this.patientService.getPatient({ _id: patientId });
+
+      if (!data) throw new NotFoundException('Patient not found');
+
+      return {
+         success: true,
+         message: 'favourite doctors fetched successfully',
+         data: data.favouriteDoctors,
+      };
+   }
+
+   async getUserFavDoctors(userId: string) {
+      const data = await this.patientService.getPatient({ user: userId });
+
+      if (!data) throw new NotFoundException('Patient not found');
+
+      return {
+         success: true,
+         message: 'favourite doctors fetched successfully',
+         data: data.favouriteDoctors,
+      };
+   }
 }
