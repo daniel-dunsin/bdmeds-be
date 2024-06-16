@@ -76,7 +76,7 @@ export class UserProvider {
       return {
          success: true,
          message: 'profile picture updated',
-         data,
+         data: this.utilService.excludePassword(data),
       };
    }
 }

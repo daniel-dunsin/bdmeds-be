@@ -30,6 +30,7 @@ import { JwtType } from './enums/jwt.enum';
 import { RoleNames } from '../user/enums';
 import { DoctorService } from '../doctor/doctor.service';
 import { PatientService } from '../patient/patient.service';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -323,6 +324,29 @@ export class AuthService {
             accessToken,
             refreshToken,
          },
+      };
+   }
+
+   async changePassword(changePasswordDto: ChangePasswordDto, userId: string) {
+      const user = await this.userService.getUser({ _id: userId });
+
+      const passwordMatch = await this.utilService.comparePassword(
+         changePasswordDto.oldPassword,
+         user.password,
+      );
+
+      if (!passwordMatch)
+         throw new BadRequestException('Old password is incorrect');
+
+      const hashedPassword = await this.utilService.hashPassword(
+         changePasswordDto.newPassword,
+      );
+      user.password = hashedPassword;
+      await user.save();
+
+      return {
+         success: true,
+         message: 'password changed',
       };
    }
 }

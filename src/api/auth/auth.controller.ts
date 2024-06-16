@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+   Body,
+   Controller,
+   HttpCode,
+   HttpStatus,
+   Post,
+   Put,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import {
@@ -9,7 +16,8 @@ import {
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { SignInDto } from './dto/sign-in.dto';
-import { IsPublic } from 'src/shared/decorators/auth.decorators';
+import { Auth, IsPublic } from 'src/shared/decorators/auth.decorators';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -94,6 +102,21 @@ export class AuthController {
    })
    async refreshSesson(@Body('refreshToken') refreshToken: string) {
       const data = await this.authService.refreshSession(refreshToken);
+
+      return data;
+   }
+
+   @Put('/change-password')
+   @ApiBearerAuth()
+   @HttpCode(HttpStatus.OK)
+   async changePassword(
+      @Auth('_id') userId: string,
+      @Body() changePasswordDto: ChangePasswordDto,
+   ) {
+      const data = await this.authService.changePassword(
+         changePasswordDto,
+         userId,
+      );
 
       return data;
    }
