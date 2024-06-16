@@ -10,6 +10,21 @@ export class TeethMetrics {
       required: true,
    })
    patient: PatientDocument | string;
+
+   @Prop()
+   dentalHealthStatus: string; // Descriptive
+
+   @Prop()
+   cavitiesCount: number; // Count
+
+   @Prop()
+   gumRecession: number; // Millimeters (mm)
+
+   @Prop()
+   plaqueIndex: number; // Score
+
+   @Prop()
+   recentProcedures: string; // Descriptive
 }
 
 export type TeethMetricsDocument = HydratedDocument<TeethMetrics>;

@@ -21,9 +21,6 @@ export class SkinMetrics {
    lesionSize: number; // Millimeters (mm)
 
    @Prop()
-   allergyTestResults: number; // Millimeters (mm)
-
-   @Prop()
    biopsyResults: string; // Descriptive
 }
 
