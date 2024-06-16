@@ -1,13 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-import {
-   Patient,
-   PatientDocument,
-} from 'src/api/patient/schema/patient.schema';
+import { Patient, PatientDocument } from 'src/api/patient/schema/patient.schema';
 import { schemaOptions } from 'src/shared/constants/db.const';
 import { TempPatient, TempPatientSchema } from './temp-patient.schema';
 import { Doctor, DoctorDocument } from 'src/api/doctor/schema/doctor.schema';
 import { AppointmentMode, AppointmentStatus } from '../enums';
+import { Departments } from 'src/api/doctor/enums';
 
 @Schema(schemaOptions)
 export class Appointment {
@@ -33,6 +31,9 @@ export class Appointment {
 
    @Prop()
    appointmentDate: Date;
+
+   @Prop({ type: String, enum: Object.values(Departments) })
+   department: Departments;
 
    @Prop()
    startTime: Date;

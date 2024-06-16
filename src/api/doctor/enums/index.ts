@@ -10,6 +10,18 @@ export enum DoctorSpeciality {
    DERMATOLOGIST = 'dermatolgist',
 }
 
+export enum Departments {
+   CARDIOLOGY = 'Cardiology (Heart)',
+   DENTISTRY = 'Dentistry (Teeth and Oral Health)',
+   NEUROLOGY = 'Neurology (Nervous System)',
+   ORTHOPEDICS = 'Orthopedics (Musculoskeletal System)',
+   OPTOMETRY = 'Optometry (Eye and Vision Care)',
+   PSYCHOTHERAPY = 'Psychotherapy (Mental Health)',
+   NEPHROLOGY = 'Nephrology (Kidneys)',
+   HEPATOLOGY = 'Hepatology (Liver)',
+   DERMATOLOGY = 'Dermatology (Skin)',
+}
+
 export enum KycIdType {
    NIC = 'National Identification Card',
    INTERNATIONAL_PASSPORT = 'International Passport',

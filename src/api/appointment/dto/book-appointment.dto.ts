@@ -1,5 +1,6 @@
 import { IsDate, IsEnum } from 'src/shared/decorators';
 import { AppointmentMode } from '../enums';
+import { Departments } from 'src/api/doctor/enums';
 
 export class BookSessionDto {
    @IsDate(false)
@@ -13,4 +14,7 @@ export class BookSessionDto {
 
    @IsEnum(AppointmentMode, false)
    mode: AppointmentMode;
+
+   @IsEnum(Departments, false)
+   department: Departments;
 }
