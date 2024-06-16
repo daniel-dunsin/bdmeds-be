@@ -104,7 +104,7 @@ export const IsUrl = (isOptional: boolean) => {
 };
 
 export const IsBase64 = (isOptional: boolean) => {
-   const decorators = [_IsBase64()];
+   const decorators = [_IsString()];
 
    if (isOptional) {
       decorators.push(ApiPropertyOptional({ example: 'base64' }));
