@@ -4,3 +4,8 @@ export enum AppointmentStatus {
    CANCELLED = 'cancelled',
    RESCHEDULED = 'rescheduled',
 }
+
+export enum AppointmentMode {
+   ONLINE = 'online',
+   OFFLINE = 'offline',
+}

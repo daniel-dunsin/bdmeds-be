@@ -7,7 +7,7 @@ import {
 import { schemaOptions } from 'src/shared/constants/db.const';
 import { TempPatient, TempPatientSchema } from './temp-patient.schema';
 import { Doctor, DoctorDocument } from 'src/api/doctor/schema/doctor.schema';
-import { AppointmentStatus } from '../enums';
+import { AppointmentMode, AppointmentStatus } from '../enums';
 
 @Schema(schemaOptions)
 export class Appointment {
@@ -32,16 +32,13 @@ export class Appointment {
    doctor: DoctorDocument;
 
    @Prop()
-   sessionLifeSpan: number;
-
-   @Prop()
    appointmentDate: Date;
 
-   @Prop({ default: false })
-   patientRecorded: boolean;
+   @Prop()
+   startTime: Date;
 
-   @Prop({ default: false })
-   doctorRecorded: boolean;
+   @Prop()
+   endTime: Date;
 
    @Prop({
       type: String,
@@ -49,6 +46,13 @@ export class Appointment {
       default: AppointmentStatus.PENDING,
    })
    status: AppointmentStatus;
+
+   @Prop({
+      type: String,
+      enum: Object.values(AppointmentMode),
+      required: true,
+   })
+   mode: AppointmentMode;
 
    // add the invoice
 }
