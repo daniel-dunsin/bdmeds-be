@@ -32,6 +32,9 @@ export class AvailableDay {
 }
 
 export class UpdateDoctorDto extends BaseUpdateUserDto {
+   @IsString(true)
+   bio: string;
+
    @IsEnum(DoctorSpeciality, true)
    speciality?: DoctorSpeciality;
 

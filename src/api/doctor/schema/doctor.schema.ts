@@ -25,6 +25,9 @@ export class Doctor {
    @Prop()
    qualifications: string[];
 
+   @Prop()
+   bio: string;
+
    @Prop({
       type: {
          facebook: {
