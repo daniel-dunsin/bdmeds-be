@@ -3,6 +3,7 @@ import { PatientService } from './patient.service';
 import { UpdatePatientDto } from './dto/update-patient.dto';
 import { UserService } from '../user/user.service';
 import { DoctorDocument } from '../doctor/schema/doctor.schema';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class PatientProvider {
@@ -12,7 +13,9 @@ export class PatientProvider {
    ) {}
 
    async getUserPatient(userId: string) {
-      const data = await this.patientService.getPatient({ user: userId });
+      const data = await this.patientService.getPatient({
+         user: new Types.ObjectId(userId),
+      });
 
       if (!data) {
          throw new NotFoundException('Patient not found');
@@ -41,7 +44,7 @@ export class PatientProvider {
 
    async updatePatient(updatePatientDto: UpdatePatientDto, userId: string) {
       const data = await this.patientService.updatePatient(
-         { user: userId },
+         { user: new Types.ObjectId(userId) },
          updatePatientDto,
       );
 
@@ -59,7 +62,9 @@ export class PatientProvider {
    }
 
    async addFavDoc(doctorId: string, userId: string) {
-      const data = await this.patientService.getPatient({ user: userId });
+      const data = await this.patientService.getPatient({
+         user: new Types.ObjectId(userId),
+      });
 
       if (!data) throw new NotFoundException('Patient not found');
       if (
@@ -78,7 +83,9 @@ export class PatientProvider {
    }
 
    async removeFavDoc(doctorId: string, userId: string) {
-      const data = await this.patientService.getPatient({ user: userId });
+      const data = await this.patientService.getPatient({
+         user: new Types.ObjectId(userId),
+      });
 
       if (!data) throw new NotFoundException('Patient not found');
       data.favouriteDoctors = data.favouriteDoctors.filter(
@@ -105,7 +112,9 @@ export class PatientProvider {
    }
 
    async getUserFavDoctors(userId: string) {
-      const data = await this.patientService.getPatient({ user: userId });
+      const data = await this.patientService.getPatient({
+         user: new Types.ObjectId(userId),
+      });
 
       if (!data) throw new NotFoundException('Patient not found');
 

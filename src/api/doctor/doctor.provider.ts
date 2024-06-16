@@ -48,7 +48,7 @@ export class DoctorProvider {
 
    async updateDoctor(userId: string, updateDoctorDto: UpdateDoctorDto) {
       const data = await this.doctorService.updateDoctor(
-         { user: userId },
+         { user: new Types.ObjectId(userId) },
          updateDoctorDto,
       );
 
@@ -63,7 +63,9 @@ export class DoctorProvider {
    }
 
    async updateKycDocuments(updateKycDto: KycDocsDto, userId: string) {
-      const doctor = await this.doctorService.getDoctor({ _id: userId });
+      const doctor = await this.doctorService.getDoctor({
+         user: new Types.ObjectId(userId),
+      });
       if (!doctor) throw new NotFoundException('Doctor profile not found');
       if (doctor.kycVerified)
          throw new NotFoundException('Your Kyc info has been verified');
