@@ -36,17 +36,23 @@
                <!-- Heading -->
                <h1>New Appointment Booking</h1>
                <p>Dear Dr. {{doctorName}},</p>
-               <p>We are pleased to inform you that a new
-                  {{appointmentMode}}
-                  appointment has been booked with you.</p>
-               <p><strong>Patient Name:</strong> {{patientName}}</p>
-               <p><strong>Date and Time:</strong>
-                  {{startTime}}
-                  {{endTime}}
+               <p>You appointment with
+                  {{patientName}}
+                  has been rescheduled from
+                  {{prevStartTime}}
+                  -
+                  {{prevEndTime}}
                   on
-                  {{appointmentDate}}</p>
-               <p><strong>Email: </strong> {{patientEmail}}</p>
-               <p><strong>Phone Number: </strong> {{patientPhoneNumber}}</p>
+                  {{prevAppointmentDate}}
+                  to
+                  <b>{{newStartTime}}
+                     -
+                     {{newEndTime}}
+                     on
+                     {{newAppointmentDate}}
+                  </b>
+               </p>
+
                <p>Please log in to your account to view more details and manage your appointments.</p>
                <p>Best Regards,<br />BdMeds 🏥</p>
             </div>

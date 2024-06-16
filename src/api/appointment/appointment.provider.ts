@@ -5,10 +5,11 @@ import { AppointmentService } from './appointment.service';
 import { DoctorService } from '../doctor/doctor.service';
 import { PatientService } from '../patient/patient.service';
 import { FilterQuery, Types } from 'mongoose';
-import { AppointmentMode } from './enums';
+import { AppointmentMode, AppointmentStatus } from './enums';
 import { MailService } from 'src/shared/mail/mail.service';
 import { endOfDay, format, startOfDay } from 'date-fns';
 import { AppointmentDocument } from './schemas/appointment.schema';
+import { RoleNames } from '../user/enums';
 
 @Injectable()
 export class AppointmentProvider {
@@ -88,7 +89,7 @@ export class AppointmentProvider {
       });
 
       await this.mailService.sendMail({
-         to: doctor.user._id,
+         to: doctor.user.email,
          subject: 'BdMeds',
          template: 'doctor-new-appointment',
          context: {
@@ -150,6 +151,57 @@ export class AppointmentProvider {
       return await this.getPatientAppointments(patient._id);
    }
 
-   // reschedule
-   // book session validation
+   async rescheduleAppointment(sessionDto: SessionDto, appointmentId: string, user: UserDocument) {
+      const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
+
+      if (appointment.status != AppointmentStatus.PENDING)
+         throw new BadRequestException('Only pending appointments can be rescheduled');
+
+      if (
+         String(appointment.doctor.user._id) != String(user._id) &&
+         String(appointment.patient.user._id) != String(user._id)
+      ) {
+         throw new BadRequestException('Only the doctor/patient of this appointment can reschedule it');
+      }
+
+      await this.validatePatientAndDocAvailaibility(
+         sessionDto,
+         String(appointment.doctor._id),
+         String(appointment.patient._id),
+         user.role === RoleNames.PATIENT,
+      );
+
+      const data = await this.appointmentService.updateAppointment({ _id: appointmentId }, sessionDto);
+
+      const emailContext = {
+         doctorName: appointment.doctor.user.firstName,
+         patientName: `${appointment.patient.user?.firstName} ${appointment.patient.user?.lastName}`,
+         prevAppointmentDate: format(appointment.appointmentDate, 'do, MMM yyyy'),
+         prevStartTime: format(appointment.startTime, 'h:mm a..aa'),
+         prevEndTime: format(appointment.endTime, 'h:mm a..aa'),
+         newAppointmentDate: format(sessionDto.appointmentDate, 'do, MMM yyyy'),
+         newStartTime: format(sessionDto.startTime, 'h:mm a..aa'),
+         newEndTime: format(sessionDto.endTime, 'h:mm a..aa'),
+      };
+
+      await this.mailService.sendMail({
+         to: appointment.patient.user.email,
+         subject: 'BdMeds: Appointment Reschedule',
+         template: 'patient-rescheduled-appointment',
+         context: emailContext,
+      });
+
+      await this.mailService.sendMail({
+         to: appointment.doctor.user.email,
+         subject: 'BdMeds: Appointment Reschedule',
+         template: 'doctor-rescheduled-appointment',
+         context: emailContext,
+      });
+
+      return {
+         success: true,
+         message: 'appointment rescheduled',
+         data,
+      };
+   }
 }

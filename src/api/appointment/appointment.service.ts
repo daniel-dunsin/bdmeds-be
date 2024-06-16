@@ -39,13 +39,13 @@ export class AppointmentService {
       return appointment;
    }
 
-   async getAppointments(filter: FilterQuery<AppointmentDocument>) {
+   async getAppointments(filter: FilterQuery<AppointmentDocument>): Promise<AppointmentDocument[]> {
       const appointments = await this.populate(this._appointmentModel.find(filter).sort({ createdAt: -1 }));
 
       return appointments;
    }
 
-   async getAppointment(filter: FilterQuery<AppointmentDocument>) {
+   async getAppointment(filter: FilterQuery<AppointmentDocument>): Promise<AppointmentDocument> {
       const appointment = await this.populate(this._appointmentModel.findOne(filter));
 
       return appointment;

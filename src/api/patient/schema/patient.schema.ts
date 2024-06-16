@@ -10,7 +10,7 @@ export class Patient {
       type: Types.ObjectId,
       ref: User.name,
    })
-   user: UserDocument | string;
+   user: UserDocument;
 
    @Prop()
    dateOfBirth: Date;
