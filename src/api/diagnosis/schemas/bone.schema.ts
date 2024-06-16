@@ -10,6 +10,17 @@ export class BoneMetrics {
       required: true,
    })
    patient: PatientDocument | string;
+
+   // description
+   @Prop()
+   boneHealthStatus: string;
+
+   // degrees
+   @Prop()
+   rangeOfMotion: number;
+
+   @Prop()
+   totalFractures: number;
 }
 
 export type BoneMetricsDocument = HydratedDocument<BoneMetrics>;
