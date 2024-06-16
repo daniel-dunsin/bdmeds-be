@@ -10,6 +10,21 @@ export class LiverMetrics {
       required: true,
    })
    patient: PatientDocument | string;
+
+   @Prop()
+   liverHealthStatus: string;
+
+   @Prop()
+   altLevel: number; // Units per liter (U/L)
+
+   @Prop()
+   astLevel: number; // Units per liter (U/L)
+
+   @Prop()
+   bilirubin: number; // Milligrams per deciliter (mg/dL)
+
+   @Prop()
+   fibrosisScore: number; // Scaled (e.g., METAVIR score)
 }
 
 export type LiverMetricsDocument = HydratedDocument<LiverMetrics>;
