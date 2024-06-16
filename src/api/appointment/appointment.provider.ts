@@ -74,9 +74,10 @@ export class AppointmentProvider {
          throw new NotFoundException(`This doctor is not available at the moment`);
       }
 
-      const patient = await this.patientService.getPatient({
-         user: new Types.ObjectId(user._id),
-      });
+      const patient = await this.patientService.getPatient({ user: new Types.ObjectId(user._id) });
+      if (!patient) throw new NotFoundException('Patient not found');
+
+      await this.validatePatientAndDocAvailaibility(bookSessionDto, doctor._id, patient._id, true);
 
       const data = await this.appointmentService.createAppointment({
          ...bookSessionDto,
