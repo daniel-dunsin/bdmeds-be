@@ -9,6 +9,7 @@ import {
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import {
+   OnBoardAdminDto,
    OnBoardDoctorDto,
    OnBoardPatientDto,
    RegisterDto,
@@ -36,6 +37,14 @@ export class AuthController {
    @IsPublic()
    async onBoardDoctor(@Body() onBoardDoctorDto: OnBoardDoctorDto) {
       const data = await this.authService.onBoardDoctor(onBoardDoctorDto);
+
+      return data;
+   }
+
+   @Post('/signup/admin')
+   @IsPublic()
+   async onBoardAdmin(@Body() onBoardAdminDto: OnBoardAdminDto) {
+      const data = await this.authService.onBoardAdmin(onBoardAdminDto);
 
       return data;
    }

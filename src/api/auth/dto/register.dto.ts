@@ -35,3 +35,5 @@ export class OnBoardDoctorDto extends RegisterDto {
    @IsEnum(DoctorSpeciality, false)
    speciality: DoctorSpeciality;
 }
+
+export class OnBoardAdminDto extends RegisterDto {}

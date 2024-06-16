@@ -10,6 +10,7 @@ import { Jwt, JwtDocument } from './schema/jwt.schema';
 import { Model } from 'mongoose';
 import { UserService } from '../user/user.service';
 import {
+   OnBoardAdminDto,
    OnBoardDoctorDto,
    OnBoardPatientDto,
    RegisterDto,
@@ -279,6 +280,8 @@ export class AuthService {
       );
       if (!passwordMatch)
          throw new UnauthorizedException('Invalid login credentials');
+      if (!user.emailVerified)
+         throw new BadRequestException('Email not verified');
 
       const data = await this.auth(this.utilService.excludePassword(user));
 
@@ -347,6 +350,23 @@ export class AuthService {
       return {
          success: true,
          message: 'password changed',
+      };
+   }
+
+   async onBoardAdmin(onBoardAdminDto: OnBoardAdminDto) {
+      onBoardAdminDto.role = RoleNames.ADMIN;
+      onBoardAdminDto.password = await this.utilService.hashPassword(
+         onBoardAdminDto.password,
+      );
+
+      const data = await this.userService.createUser({
+         ...onBoardAdminDto,
+         emailVerified: true,
+      });
+
+      return {
+         success: true,
+         message: 'admin created',
       };
    }
 }
