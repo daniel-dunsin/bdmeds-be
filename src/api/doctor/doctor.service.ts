@@ -75,7 +75,12 @@ export class DoctorService {
    }
 
    async getKycs(filter: FilterQuery<KycVerificationDocument>) {
-      const kycs = await this._kycModel.find(filter).populate({ path: 'doctor', populate: { path: 'user' } });
+      const kycs = await this._kycModel
+         .find(filter)
+         .populate({
+            path: 'doctor',
+            populate: { path: 'user', select: 'firstName lastName profilePicture' },
+         });
 
       return kycs;
    }

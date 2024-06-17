@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DoctorProvider } from './doctor.provider';
 import { Auth, IsPublic, Roles } from 'src/shared/decorators/auth.decorators';
@@ -7,6 +7,7 @@ import { DoctorSpeciality, KycIdType } from './enums';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
 import { KycDocsDto } from './dto/kyc-verification.dto';
 import { RoleNames } from '../user/enums';
+import { GetKycDto } from './dto/get-kyc.dto';
 
 @Controller('/doctor')
 @ApiTags('doctor')
@@ -91,10 +92,10 @@ export class DoctorController {
       return data;
    }
 
-   @Get('/kyc/unverified')
+   @Get('/kyc')
    @Roles([RoleNames.ADMIN])
-   async getUnverifiedKycs() {
-      const data = await this.doctorProvider.getUnverifiedKyc();
+   async getKycs(@Query() query: GetKycDto) {
+      const data = await this.doctorProvider.getKycs(query);
 
       return data;
    }

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
-import { Types } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
 import { UserService } from '../user/user.service';
 import { KycDocsDto } from './dto/kyc-verification.dto';
@@ -8,6 +8,8 @@ import { UtilService } from 'src/shared/services/utils.service';
 import { FileService } from 'src/shared/file/file.service';
 import { KycStatus } from './enums';
 import { MailService } from 'src/shared/mail/mail.service';
+import { GetKycDto } from './dto/get-kyc.dto';
+import { KycVerificationDocument } from './schema/kyc-verification.schema';
 
 @Injectable()
 export class DoctorProvider {
@@ -153,8 +155,15 @@ export class DoctorProvider {
       };
    }
 
-   async getUnverifiedKyc() {
-      const data = await this.doctorService.getKycs({ status: KycStatus.PENDING });
+   async getKycs(query: GetKycDto) {
+      const _query: FilterQuery<KycVerificationDocument> = {};
+
+      if (query.status) {
+         _query.status = query.status;
+         delete query.status;
+      }
+
+      const data = await this.doctorService.getKycs(_query);
 
       return {
          success: true,
