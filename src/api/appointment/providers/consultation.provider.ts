@@ -7,6 +7,7 @@ import { ClientSession, Connection } from 'mongoose';
 import {
    BaseConsultationReport,
    NuerologyConsultationReportDto,
+   OptometryConsultationReportDto,
    OrthopedicConsultationReportDto,
 } from '../dto/submit-consultation.dto';
 import { Departments } from 'src/api/doctor/enums';
@@ -105,6 +106,36 @@ export class ConsultationProvider {
          neurologyReportDto.diagnosisRef = DiagnosisRef['BRAIN_METRICS'];
 
          const response = await this.createConsultationReport(neurologyReportDto, appointment, session);
+         await session.commitTransaction();
+         return response;
+      } catch (error) {
+         await session.abortTransaction();
+         throw error;
+      } finally {
+         await session.endSession();
+      }
+   }
+
+   async createOptometryReport(optometryReportDto: OptometryConsultationReportDto, appointmentId: string) {
+      const session = await this.connection.startSession();
+      await session.startTransaction();
+      try {
+         await session.commitTransaction();
+
+         const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
+         if (!appointment) throw new NotFoundException('Appointment not found');
+
+         const diagnosis = await this.diagnosisService.createDiagnosis(
+            { ...optometryReportDto, patient: appointment.patient._id },
+            Departments.OPTOMETRY,
+            session,
+         );
+
+         optometryReportDto.appointment = String(appointment._id);
+         optometryReportDto.diagnosis = String(diagnosis._id);
+         optometryReportDto.diagnosisRef = DiagnosisRef['EYES_METRICS'];
+
+         const response = await this.createConsultationReport(optometryReportDto, appointment, session);
          await session.commitTransaction();
          return response;
       } catch (error) {
