@@ -32,7 +32,24 @@ export class ConsultationProvider {
       createConsultationDto: BaseConsultationReport,
       appointment: AppointmentDocument,
       session: ClientSession,
-   ) {}
+   ) {
+      const consultation = await this.consultationService.createConsultation(createConsultationDto, session);
+
+      await this.mailService.sendMail({
+         to: appointment.patient.user.email,
+         subject: `BdMeds: Dr. ${appointment.doctor.user.firstName} Consultation Report`,
+         template: 'consultation-report-submitted',
+         context: {
+            patientName: appointment.patient.user.firstName,
+            doctorName: appointment.doctor.user.firstName,
+         },
+      });
+
+      return {
+         success: true,
+         message: 'consultation created',
+      };
+   }
 
    async createOrthopedicReport(orthopedicReportDto: OrthopedicConsultationReportDto, appointmentId: string) {
       const session = await this.connection.startSession();
@@ -53,7 +70,9 @@ export class ConsultationProvider {
          orthopedicReportDto.diagnosis = String(diagnosis._id);
          orthopedicReportDto.diagnosisRef = DiagnosisRef['BONE_METRICS'];
 
-         return await this.createConsultationReport(orthopedicReportDto, appointment, session);
+         const response = await this.createConsultationReport(orthopedicReportDto, appointment, session);
+         await session.commitTransaction();
+         return response;
       } catch (error) {
          await session.abortTransaction();
          throw error;
