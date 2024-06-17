@@ -7,6 +7,7 @@ import { Appointment, AppointmentSchema } from './schemas/appointment.schema';
 import { DoctorModule } from '../doctor/doctor.module';
 import { PatientModule } from '../patient/patient.module';
 import { SharedModule } from 'src/shared/shared.module';
+import { Consultation, ConsultationSchema } from './schemas/consultation.schema';
 
 @Module({
    imports: [
@@ -15,6 +16,13 @@ import { SharedModule } from 'src/shared/shared.module';
             name: Appointment.name,
             useFactory() {
                const schema = AppointmentSchema;
+               return schema;
+            },
+         },
+         {
+            name: Consultation.name,
+            useFactory() {
+               const schema = ConsultationSchema;
                return schema;
             },
          },
