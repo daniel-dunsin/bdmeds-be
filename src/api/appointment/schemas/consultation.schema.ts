@@ -11,7 +11,7 @@ export class Consultation {
    @Prop({ type: Types.ObjectId, ref: Appointment.name })
    appointment: AppointmentDocument;
 
-   @Prop({ type: Types.ObjectId, ref: (doc: Consultation) => doc.diagnosisRef })
+   @Prop({ type: Types.ObjectId, refPath: 'diagnosisRef' })
    diagnosis: DiagnosisDocument;
 
    @Prop({ type: String, enum: Object.values(DiagnosisRef) })
