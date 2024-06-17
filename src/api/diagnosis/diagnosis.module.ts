@@ -75,5 +75,6 @@ import { TeethMetrics, TeethMetricsSchema } from './schemas/teeth.schema';
    ],
    providers: [DiagnosisProvider, DiagnosisService],
    controllers: [DiagnosisController],
+   exports: [DiagnosisService],
 })
 export class DiagnosisModule {}

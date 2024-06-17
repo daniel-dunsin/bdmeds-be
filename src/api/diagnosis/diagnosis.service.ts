@@ -52,11 +52,7 @@ export class DiagnosisService {
       return model;
    }
 
-   async createDiagnosis<T extends Document>(
-      data: T,
-      department: Departments,
-      session?: ClientSession,
-   ): Promise<T> {
+   async createDiagnosis<T>(data: T, department: Departments, session?: ClientSession): Promise<Document> {
       const model = await this.mapDepartmentToModel(department);
 
       const result = new model(data);

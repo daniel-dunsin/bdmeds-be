@@ -11,6 +11,7 @@ import { Consultation, ConsultationSchema } from './schemas/consultation.schema'
 import { ConsultationController } from './controllers/consulation.controller';
 import { ConsultationProvider } from './providers/consultation.provider';
 import { ConsultationService } from './services/consulation.service';
+import { DiagnosisModule } from '../diagnosis/diagnosis.module';
 
 @Module({
    imports: [
@@ -33,6 +34,7 @@ import { ConsultationService } from './services/consulation.service';
       DoctorModule,
       PatientModule,
       SharedModule,
+      DiagnosisModule,
    ],
    controllers: [AppointmentController, ConsultationController],
    providers: [AppointmentService, AppointmentProvider, ConsultationProvider, ConsultationService],

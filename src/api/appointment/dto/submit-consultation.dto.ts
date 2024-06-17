@@ -13,6 +13,10 @@ export class BaseConsultationReport {
 
    @IsString(true)
    symptoms?: string;
+
+   diagnosis: string;
+   diagnosisRef: string;
+   appointment: string;
 }
 
 export class OrthopedicConsultationReportDto extends BaseConsultationReport {
