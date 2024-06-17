@@ -7,6 +7,7 @@ import { ClientSession, Connection } from 'mongoose';
 import {
    BaseConsultationReport,
    CardiographyConsultationReportDto,
+   HepatologyConsultationReportDto,
    NephrologyConsultationReportDto,
    NuerologyConsultationReportDto,
    OptometryConsultationReportDto,
@@ -201,6 +202,36 @@ export class ConsultationProvider {
          nephrologyReportDto.diagnosisRef = DiagnosisRef['KIDNEY_METRICS'];
 
          const response = await this.createConsultationReport(nephrologyReportDto, appointment, session);
+         await session.commitTransaction();
+         return response;
+      } catch (error) {
+         await session.abortTransaction();
+         throw error;
+      } finally {
+         await session.endSession();
+      }
+   }
+
+   async createHepatologyReport(hepatologyReportDto: HepatologyConsultationReportDto, appointmentId: string) {
+      const session = await this.connection.startSession();
+      await session.startTransaction();
+      try {
+         await session.commitTransaction();
+
+         const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
+         if (!appointment) throw new NotFoundException('Appointment not found');
+
+         const diagnosis = await this.diagnosisService.createDiagnosis(
+            { ...hepatologyReportDto, patient: appointment.patient._id },
+            Departments.HEPATOLOGY,
+            session,
+         );
+
+         hepatologyReportDto.appointment = String(appointment._id);
+         hepatologyReportDto.diagnosis = String(diagnosis._id);
+         hepatologyReportDto.diagnosisRef = DiagnosisRef['LIVER_METRICS'];
+
+         const response = await this.createConsultationReport(hepatologyReportDto, appointment, session);
          await session.commitTransaction();
          return response;
       } catch (error) {
