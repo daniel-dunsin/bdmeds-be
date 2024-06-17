@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { BoneMetrics, BoneMetricsDocument } from './schemas/bone.schema';
 import { Model } from 'mongoose';
@@ -9,6 +9,7 @@ import { KidneyMetrics, KidneyMetricsDocument } from './schemas/kidney.schema';
 import { LiverMetrics, LiverMetricsDocument } from './schemas/liver.schema';
 import { SkinMetrics, SkinMetricsDocument } from './schemas/skin.schema';
 import { TeethMetrics, TeethMetricsDocument } from './schemas/teeth.schema';
+import { Departments } from '../doctor/enums';
 
 @Injectable()
 export class DiagnosisService {
@@ -22,4 +23,22 @@ export class DiagnosisService {
       @InjectModel(SkinMetrics.name) private readonly _skinMetricsModel: Model<SkinMetricsDocument>,
       @InjectModel(TeethMetrics.name) private readonly _teethMetricsModel: Model<TeethMetricsDocument>,
    ) {}
+
+   private async mapDepartmentToModel(department: Departments) {
+      const DEPTARTMENT_TO_MODEL: { [key in Departments]: Model<any> } = {
+         [Departments.ORTHOPEDICS]: this._boneMetricsModel,
+         [Departments.NEUROLOGY]: this._brainMetricsModel,
+         [Departments.OPTOMETRY]: this._eyesMetricsModel,
+         [Departments.CARDIOLOGY]: this._heartMetricsModel,
+         [Departments.NEPHROLOGY]: this._kidneyMetricsModel,
+         [Departments.HEPATOLOGY]: this._liverMetricsModel,
+         [Departments.DERMATOLOGY]: this._skinMetricsModel,
+         [Departments.DENTISTRY]: this._teethMetricsModel,
+         [Departments.PSYCHOTHERAPY]: undefined,
+      };
+
+      const model = DEPTARTMENT_TO_MODEL[department];
+      if (!model)
+         throw new InternalServerErrorException('Unable to store records for the selected department');
+   }
 }
