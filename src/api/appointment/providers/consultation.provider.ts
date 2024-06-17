@@ -6,6 +6,8 @@ import { InjectConnection } from '@nestjs/mongoose';
 import { ClientSession, Connection } from 'mongoose';
 import {
    BaseConsultationReport,
+   CardiographyConsultationReportDto,
+   NephrologyConsultationReportDto,
    NuerologyConsultationReportDto,
    OptometryConsultationReportDto,
    OrthopedicConsultationReportDto,
@@ -47,6 +49,7 @@ export class ConsultationProvider {
          context: {
             patientName: appointment.patient.user.firstName,
             doctorName: appointment.doctor.user.firstName,
+            department: appointment.department,
          },
       });
 
@@ -136,6 +139,68 @@ export class ConsultationProvider {
          optometryReportDto.diagnosisRef = DiagnosisRef['EYES_METRICS'];
 
          const response = await this.createConsultationReport(optometryReportDto, appointment, session);
+         await session.commitTransaction();
+         return response;
+      } catch (error) {
+         await session.abortTransaction();
+         throw error;
+      } finally {
+         await session.endSession();
+      }
+   }
+
+   async createCardiologyReport(
+      cardiologyReportDto: CardiographyConsultationReportDto,
+      appointmentId: string,
+   ) {
+      const session = await this.connection.startSession();
+      await session.startTransaction();
+      try {
+         await session.commitTransaction();
+
+         const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
+         if (!appointment) throw new NotFoundException('Appointment not found');
+
+         const diagnosis = await this.diagnosisService.createDiagnosis(
+            { ...cardiologyReportDto, patient: appointment.patient._id },
+            Departments.CARDIOLOGY,
+            session,
+         );
+
+         cardiologyReportDto.appointment = String(appointment._id);
+         cardiologyReportDto.diagnosis = String(diagnosis._id);
+         cardiologyReportDto.diagnosisRef = DiagnosisRef['HEART_METRICS'];
+
+         const response = await this.createConsultationReport(cardiologyReportDto, appointment, session);
+         await session.commitTransaction();
+         return response;
+      } catch (error) {
+         await session.abortTransaction();
+         throw error;
+      } finally {
+         await session.endSession();
+      }
+   }
+   async createNephrologyReport(nephrologyReportDto: NephrologyConsultationReportDto, appointmentId: string) {
+      const session = await this.connection.startSession();
+      await session.startTransaction();
+      try {
+         await session.commitTransaction();
+
+         const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
+         if (!appointment) throw new NotFoundException('Appointment not found');
+
+         const diagnosis = await this.diagnosisService.createDiagnosis(
+            { ...nephrologyReportDto, patient: appointment.patient._id },
+            Departments.NEPHROLOGY,
+            session,
+         );
+
+         nephrologyReportDto.appointment = String(appointment._id);
+         nephrologyReportDto.diagnosis = String(diagnosis._id);
+         nephrologyReportDto.diagnosisRef = DiagnosisRef['KIDNEY_METRICS'];
+
+         const response = await this.createConsultationReport(nephrologyReportDto, appointment, session);
          await session.commitTransaction();
          return response;
       } catch (error) {
