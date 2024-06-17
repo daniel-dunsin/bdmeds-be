@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Doctor, DoctorDocument } from './schema/doctor.schema';
-import { FilterQuery, Model, Query, QueryOptions, UpdateQuery } from 'mongoose';
+import { FilterQuery, Model, PipelineStage, Query, QueryOptions, UpdateQuery } from 'mongoose';
 import { KycDocsDto } from './dto/kyc-verification.dto';
 import { KycVerification, KycVerificationDocument } from './schema/kyc-verification.schema';
 
@@ -31,8 +31,46 @@ export class DoctorService {
    }
 
    async getDoctors(filter: FilterQuery<DoctorDocument>) {
-      const doctors = await this.populate(this._doctorModel.find(filter));
+      const { search = '', ...match } = filter;
+      const pipelines: PipelineStage[] = [
+         {
+            $match: filter,
+         },
+         {
+            $lookup: {
+               from: 'users',
+               foreignField: '_id',
+               localField: 'user',
+               as: 'user',
+            },
+         },
+         {
+            $unwind: {
+               path: '$user',
+               preserveNullAndEmptyArrays: false,
+            },
+         },
+         {
+            $sort: { createdAt: -1 },
+         },
+      ];
 
+      if (search) {
+         pipelines.push({
+            $match: {
+               $or: [
+                  {
+                     'user.firstName': { $regex: search, $options: 'i' },
+                  },
+                  {
+                     'user.lastName': { $regex: search, $options: 'i' },
+                  },
+               ],
+            },
+         });
+      }
+
+      const doctors = await this._doctorModel.aggregate(pipelines);
       return doctors;
    }
 
