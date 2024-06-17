@@ -32,7 +32,7 @@ export class ConsultationService {
       update: UpdateQuery<ConsultationDocument>,
       options: QueryOptions<ConsultationDocument>,
    ): Promise<ConsultationDocument> {
-      const consulation = await this._consultationModel.findOneAndUpdate(filter);
+      const consulation = await this._consultationModel.findOneAndUpdate(filter, update, options);
 
       return consulation;
    }
@@ -41,7 +41,7 @@ export class ConsultationService {
       filter: FilterQuery<ConsultationDocument>,
       options: QueryOptions<ConsultationDocument>,
    ) {
-      const consulation = await this._consultationModel.findOneAndDelete(filter);
+      const consulation = await this._consultationModel.findOneAndDelete(filter, options);
 
       return consulation;
    }

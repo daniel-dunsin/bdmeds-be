@@ -3,7 +3,7 @@ import { ConsultationService } from '../services/consulation.service';
 import { AppointmentService } from '../services/appointment.service';
 import { MailService } from 'src/shared/mail/mail.service';
 import { InjectConnection } from '@nestjs/mongoose';
-import { ClientSession, Connection } from 'mongoose';
+import { ClientSession, Connection, Types } from 'mongoose';
 import {
    BaseConsultationReport,
    CardiologyConsultationReportDto,
@@ -19,14 +19,7 @@ import { Departments } from 'src/api/doctor/enums';
 import { DiagnosisService } from 'src/api/diagnosis/diagnosis.service';
 import { AppointmentDocument } from '../schemas/appointment.schema';
 import { DiagnosisRef } from '../enums';
-
-/**
- * create session
- * check appointment
- * create record
- * create consultation
- * send mail to patient about the report
- */
+import { PatientService } from 'src/api/patient/patient.service';
 
 @Injectable()
 export class ConsultationProvider {
@@ -36,6 +29,7 @@ export class ConsultationProvider {
       private readonly appointmentService: AppointmentService,
       private readonly mailService: MailService,
       private readonly diagnosisService: DiagnosisService,
+      private readonly patientService: PatientService,
    ) {}
 
    async createConsultationReport(
@@ -302,5 +296,38 @@ export class ConsultationProvider {
       } finally {
          await session.endSession();
       }
+   }
+
+   async getPatientReports(department: Departments, patientId: string) {
+      const data = await this.diagnosisService.getMultipleDiagnosis(
+         { patient: new Types.ObjectId(patientId) },
+         department,
+      );
+
+      return {
+         success: true,
+         message: 'Reports fetched successfully',
+         data,
+      };
+   }
+
+   async getReports(department: Departments, userId: string) {
+      const patient = await this.patientService.getPatient({ user: new Types.ObjectId(userId) });
+
+      if (!patient) throw new NotFoundException('Patient not found');
+
+      return await this.getPatientReports(department, patient._id);
+   }
+
+   async getReport(reportId: string, department: Departments) {
+      const data = await this.diagnosisService.getSingleDiagnosis({ _id: reportId }, department);
+
+      if (!data) throw new NotFoundException("Oops! We can't find this report");
+
+      return {
+         success: true,
+         message: 'Report fetched successfully',
+         data,
+      };
    }
 }

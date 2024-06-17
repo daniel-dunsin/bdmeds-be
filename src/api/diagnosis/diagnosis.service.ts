@@ -7,6 +7,7 @@ import {
    FilterQuery,
    HydratedDocument,
    Model,
+   Query,
    QueryOptions,
    UpdateQuery,
 } from 'mongoose';
@@ -52,6 +53,24 @@ export class DiagnosisService {
       return model;
    }
 
+   async populate<T>(model: Query<any, T>) {
+      return await model.populate([
+         { path: 'patient', populate: { path: 'user' } },
+         {
+            path: 'consultation',
+            populate: {
+               path: 'appointment',
+               populate: {
+                  path: 'doctor',
+                  populate: {
+                     path: 'user',
+                  },
+               },
+            },
+         },
+      ]);
+   }
+
    async createDiagnosis<T>(data: T, department: Departments, session?: ClientSession): Promise<Document> {
       const model = await this.mapDepartmentToModel(department);
 
@@ -62,7 +81,7 @@ export class DiagnosisService {
    async getSingleDiagnosis<T extends Document>(filter: FilterQuery<T>, department: Departments): Promise<T> {
       const model = await this.mapDepartmentToModel(department);
 
-      return await model.findOne(filter);
+      return await this.populate(model.findOne(filter));
    }
 
    async getMultipleDiagnosis<T extends Document>(
@@ -71,7 +90,7 @@ export class DiagnosisService {
    ): Promise<T[]> {
       const model = await this.mapDepartmentToModel(department);
 
-      return await model.find(filter);
+      return await this.populate(model.find(filter).sort({ createdAt: -1 }));
    }
 
    async updateDiagnosis<T extends Document>(
