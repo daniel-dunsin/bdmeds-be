@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { PatientDocument } from 'src/api/patient/schema/patient.schema';
 import { schemaOptions } from 'src/shared/constants/db.const';
+import { Frequency } from '../enums';
 
 @Schema(schemaOptions)
 export class KidneyMetrics {
@@ -26,8 +27,8 @@ export class KidneyMetrics {
    @Prop()
    dialysisHours: number; // Hours
 
-   @Prop()
-   dialysisFrequency: number; // Frequency
+   @Prop({ type: String, enum: Object.values(Frequency) })
+   dialysisFrequency: Frequency; // Frequency
 }
 
 export type KidneyMetricsDocument = HydratedDocument<KidneyMetrics>;
