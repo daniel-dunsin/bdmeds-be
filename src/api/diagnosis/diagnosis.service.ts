@@ -1,7 +1,15 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { BoneMetrics, BoneMetricsDocument } from './schemas/bone.schema';
-import { Model } from 'mongoose';
+import {
+   ClientSession,
+   Document,
+   FilterQuery,
+   HydratedDocument,
+   Model,
+   QueryOptions,
+   UpdateQuery,
+} from 'mongoose';
 import { BrainMetrics, BrainMetricsDocument } from './schemas/brain.schema';
 import { EyesMetrics, EyesMetricsDocument } from './schemas/eyes.schema';
 import { HeartMetrics, HeartMetricsDocument } from './schemas/heart.schema';
@@ -24,7 +32,7 @@ export class DiagnosisService {
       @InjectModel(TeethMetrics.name) private readonly _teethMetricsModel: Model<TeethMetricsDocument>,
    ) {}
 
-   private async mapDepartmentToModel(department: Departments) {
+   async mapDepartmentToModel(department: Departments) {
       const DEPTARTMENT_TO_MODEL: { [key in Departments]: Model<any> } = {
          [Departments.ORTHOPEDICS]: this._boneMetricsModel,
          [Departments.NEUROLOGY]: this._brainMetricsModel,
@@ -40,5 +48,54 @@ export class DiagnosisService {
       const model = DEPTARTMENT_TO_MODEL[department];
       if (!model)
          throw new InternalServerErrorException('Unable to store records for the selected department');
+
+      return model;
+   }
+
+   async createDiagnosis<T extends Document>(
+      data: T,
+      department: Departments,
+      session?: ClientSession,
+   ): Promise<T> {
+      const model = await this.mapDepartmentToModel(department);
+
+      const result = new model(data);
+      return await result.save({ session });
+   }
+
+   async getSingleDiagnosis<T extends Document>(filter: FilterQuery<T>, department: Departments): Promise<T> {
+      const model = await this.mapDepartmentToModel(department);
+
+      return await model.findOne(filter);
+   }
+
+   async getMultipleDiagnosis<T extends Document>(
+      filter: FilterQuery<T>,
+      department: Departments,
+   ): Promise<T[]> {
+      const model = await this.mapDepartmentToModel(department);
+
+      return await model.find(filter);
+   }
+
+   async updateDiagnosis<T extends Document>(
+      filter: FilterQuery<T>,
+      update: UpdateQuery<T>,
+      department: Departments,
+      options?: QueryOptions,
+   ): Promise<T> {
+      const model = await this.mapDepartmentToModel(department);
+
+      return await model.findOneAndUpdate(filter, update, options);
+   }
+
+   async deleteDiagnosis<T extends Document>(
+      filter: FilterQuery<T>,
+      department: Departments,
+      options: QueryOptions,
+   ): Promise<T> {
+      const model = await this.mapDepartmentToModel(department);
+
+      return await model.findOneAndDelete(filter, options);
    }
 }
