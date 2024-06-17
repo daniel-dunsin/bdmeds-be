@@ -13,13 +13,6 @@ export class SkinMetrics {
    })
    patient: PatientDocument;
 
-   @Prop({
-      type: Types.ObjectId,
-      required: true,
-      ref: Consultation.name,
-   })
-   consultation: ConsultationDocument;
-
    @Prop()
    skinHealthStatus: string; // Descriptive
 

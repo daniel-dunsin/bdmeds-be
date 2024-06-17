@@ -13,13 +13,6 @@ export class BoneMetrics {
    })
    patient: PatientDocument;
 
-   @Prop({
-      type: Types.ObjectId,
-      required: true,
-      ref: Consultation.name,
-   })
-   consultation: ConsultationDocument;
-
    // description
    @Prop()
    boneHealthStatus: string;

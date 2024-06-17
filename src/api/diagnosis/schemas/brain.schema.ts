@@ -13,12 +13,6 @@ export class BrainMetrics {
    })
    patient: PatientDocument;
 
-   @Prop({
-      type: Types.ObjectId,
-      required: true,
-      ref: Consultation.name,
-   })
-   consultation: ConsultationDocument;
    // description
    @Prop()
    brainHealthStatus: string;

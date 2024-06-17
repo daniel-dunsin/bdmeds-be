@@ -13,13 +13,6 @@ export class EyesMetrics {
    })
    patient: PatientDocument;
 
-   @Prop({
-      type: Types.ObjectId,
-      required: true,
-      ref: Consultation.name,
-   })
-   consultation: ConsultationDocument;
-
    @Prop()
    visionTestResult: string; // Visual acuity (e.g., 20/20)
 
