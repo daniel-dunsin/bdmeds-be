@@ -10,6 +10,8 @@ import { KycStatus } from './enums';
 import { MailService } from 'src/shared/mail/mail.service';
 import { GetKycDto } from './dto/get-kyc.dto';
 import { KycVerificationDocument } from './schema/kyc-verification.schema';
+import { GetDoctorDto } from './dto/get-doctor.dto';
+import { DoctorDocument } from './schema/doctor.schema';
 
 @Injectable()
 export class DoctorProvider {
@@ -168,6 +170,28 @@ export class DoctorProvider {
       return {
          success: true,
          message: 'Kycs fetched',
+         data,
+      };
+   }
+
+   async getDoctors(query: GetDoctorDto) {
+      const _query: FilterQuery<DoctorDocument> = {};
+
+      if (query.search) {
+         _query.search = query.search;
+         delete query.search;
+      }
+
+      if (query.department) {
+         _query.department = query.department;
+         delete query.department;
+      }
+
+      const data = await this.doctorService.getDoctors(_query);
+
+      return {
+         success: true,
+         message: 'doctors fetched',
          data,
       };
    }

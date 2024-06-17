@@ -8,6 +8,7 @@ import { UpdateDoctorDto } from './dto/update-doctor.dto';
 import { KycDocsDto } from './dto/kyc-verification.dto';
 import { RoleNames } from '../user/enums';
 import { GetKycDto } from './dto/get-kyc.dto';
+import { GetDoctorDto } from './dto/get-doctor.dto';
 
 @Controller('/doctor')
 @ApiTags('doctor')
@@ -97,6 +98,14 @@ export class DoctorController {
    @IsPublic()
    async getDoctor(@Param('doctorId', MongoIdPipe) doctorId: string) {
       const data = await this.doctorProvider.getDoctor(doctorId);
+
+      return data;
+   }
+
+   @Get()
+   @IsPublic()
+   async getDoctors(@Query() query: GetDoctorDto) {
+      const data = await this.doctorProvider.getDoctors(query);
 
       return data;
    }
