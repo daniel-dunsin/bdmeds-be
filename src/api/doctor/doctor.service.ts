@@ -3,10 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Doctor, DoctorDocument } from './schema/doctor.schema';
 import { FilterQuery, Model, Query, QueryOptions, UpdateQuery } from 'mongoose';
 import { KycDocsDto } from './dto/kyc-verification.dto';
-import {
-   KycVerification,
-   KycVerificationDocument,
-} from './schema/kyc-verification.schema';
+import { KycVerification, KycVerificationDocument } from './schema/kyc-verification.schema';
 
 @Injectable()
 export class DoctorService {
@@ -62,11 +59,11 @@ export class DoctorService {
    }
 
    async updateKyc(kycVerificationDto: KycDocsDto, doctorId: string) {
-      const kyc = await this._kycModel.findOneAndUpdate(
-         { doctor: doctorId },
-         kycVerificationDto,
-         { upsert: true, new: true, runValidators: true },
-      );
+      const kyc = await this._kycModel.findOneAndUpdate({ doctor: doctorId }, kycVerificationDto, {
+         upsert: true,
+         new: true,
+         runValidators: true,
+      });
 
       return kyc;
    }
@@ -75,5 +72,11 @@ export class DoctorService {
       const kyc = await this._kycModel.findOne({ doctor: doctorId });
 
       return kyc;
+   }
+
+   async getKycs(filter: FilterQuery<KycVerificationDocument>) {
+      const kycs = await this._kycModel.find(filter).populate({ path: 'doctor', populate: { path: 'user' } });
+
+      return kycs;
    }
 }

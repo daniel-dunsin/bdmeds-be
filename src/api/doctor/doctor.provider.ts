@@ -67,11 +67,11 @@ export class DoctorProvider {
          user: new Types.ObjectId(userId),
       });
       if (!doctor) throw new NotFoundException('Doctor profile not found');
-      if (doctor.kycVerified)
-         throw new NotFoundException('Your Kyc info has been verified');
+      if (doctor.kycVerified) throw new NotFoundException('Your Kyc info has been verified');
 
-      const { url: idDoc, public_id: idDocPublicId } =
-         await this.fileService.uploadResource(updateKycDto.idDoc);
+      const { url: idDoc, public_id: idDocPublicId } = await this.fileService.uploadResource(
+         updateKycDto.idDoc,
+      );
 
       const { url: professionalCert, public_id: professionalCertPublicId } =
          await this.fileService.uploadResource(updateKycDto.professionalCert);
@@ -115,15 +115,9 @@ export class DoctorProvider {
    }
 
    async verifyDoctorKyc(doctorId: string) {
-      const data = await this.doctorService.updateDoctor(
-         { _id: doctorId },
-         { kycVerified: true },
-      );
+      const data = await this.doctorService.updateDoctor({ _id: doctorId }, { kycVerified: true });
 
-      await this.doctorService.updateKyc(
-         { status: KycStatus.SUCCESSFUL },
-         doctorId,
-      );
+      await this.doctorService.updateKyc({ status: KycStatus.SUCCESSFUL }, doctorId);
 
       await this.mailService.sendMail({
          to: data.user.email,
@@ -141,14 +135,8 @@ export class DoctorProvider {
    }
 
    async rejectDoctorKyc(doctorId: string) {
-      const data = await this.doctorService.updateDoctor(
-         { _id: doctorId },
-         { kycVerified: false },
-      );
-      await this.doctorService.updateKyc(
-         { status: KycStatus.FAILED },
-         doctorId,
-      );
+      const data = await this.doctorService.updateDoctor({ _id: doctorId }, { kycVerified: false });
+      await this.doctorService.updateKyc({ status: KycStatus.FAILED }, doctorId);
 
       await this.mailService.sendMail({
          to: data.user.email,
@@ -162,6 +150,16 @@ export class DoctorProvider {
       return {
          success: true,
          message: 'Kyc Rejected',
+      };
+   }
+
+   async getUnverifiedKyc() {
+      const data = await this.doctorService.getKycs({ status: KycStatus.PENDING });
+
+      return {
+         success: true,
+         message: 'Kycs fetched',
+         data,
       };
    }
 }

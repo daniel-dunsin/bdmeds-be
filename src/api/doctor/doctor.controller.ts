@@ -35,14 +35,8 @@ export class DoctorController {
 
    @Put()
    @Roles([RoleNames.DOCTOR])
-   async updateDoctor(
-      @Auth('_id') userId: string,
-      @Body() updateDoctorDto: UpdateDoctorDto,
-   ) {
-      const data = await this.doctorProvider.updateDoctor(
-         userId,
-         updateDoctorDto,
-      );
+   async updateDoctor(@Auth('_id') userId: string, @Body() updateDoctorDto: UpdateDoctorDto) {
+      const data = await this.doctorProvider.updateDoctor(userId, updateDoctorDto);
 
       return data;
    }
@@ -57,14 +51,8 @@ export class DoctorController {
 
    @Put('/kyc/update')
    @Roles([RoleNames.DOCTOR])
-   async updateKycInfo(
-      @Auth('_id') userId: string,
-      @Body() updateKycDto: KycDocsDto,
-   ) {
-      const data = await this.doctorProvider.updateKycDocuments(
-         updateKycDto,
-         userId,
-      );
+   async updateKycInfo(@Auth('_id') userId: string, @Body() updateKycDto: KycDocsDto) {
+      const data = await this.doctorProvider.updateKycDocuments(updateKycDto, userId);
 
       return data;
    }
@@ -99,6 +87,14 @@ export class DoctorController {
    @Roles([RoleNames.ADMIN])
    async rejectDoctorKyc(@Param('doctorId') doctorId: string) {
       const data = await this.doctorProvider.rejectDoctorKyc(doctorId);
+
+      return data;
+   }
+
+   @Get('/kyc/unverified')
+   @Roles([RoleNames.ADMIN])
+   async getUnverifiedKycs() {
+      const data = await this.doctorProvider.getUnverifiedKyc();
 
       return data;
    }
