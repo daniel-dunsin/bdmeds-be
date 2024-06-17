@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-import { PatientDocument } from 'src/api/patient/schema/patient.schema';
+import { Consultation, ConsultationDocument } from 'src/api/appointment/schemas/consultation.schema';
+import { Patient, PatientDocument } from 'src/api/patient/schema/patient.schema';
 import { schemaOptions } from 'src/shared/constants/db.const';
 
 @Schema(schemaOptions)
@@ -8,9 +9,16 @@ export class BrainMetrics {
    @Prop({
       type: Types.ObjectId,
       required: true,
+      ref: Patient.name,
    })
-   patient: PatientDocument | string;
+   patient: PatientDocument;
 
+   @Prop({
+      type: Types.ObjectId,
+      required: true,
+      ref: Consultation.name,
+   })
+   consultation: ConsultationDocument;
    // description
    @Prop()
    brainHealthStatus: string;
