@@ -3,7 +3,8 @@ import { ConsultationService } from '../services/consulation.service';
 import { AppointmentService } from '../services/appointment.service';
 import { MailService } from 'src/shared/mail/mail.service';
 import { InjectConnection } from '@nestjs/mongoose';
-import { Connection } from 'mongoose';
+import { ClientSession, Connection } from 'mongoose';
+import { OrthopedicConsultationReportDto } from '../dto/submit-consultation.dto';
 
 /**
  * create session
@@ -21,4 +22,11 @@ export class ConsultationProvider {
       private readonly appointmentService: AppointmentService,
       private readonly mailService: MailService,
    ) {}
+
+   async createOrthopedicReport(
+      orthopedicReportDto: OrthopedicConsultationReportDto,
+      session: ClientSession,
+   ) {
+      return;
+   }
 }

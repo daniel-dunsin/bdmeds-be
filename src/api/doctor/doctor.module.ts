@@ -17,11 +17,10 @@ import { SPECIALITY_TO_DEPARTMENT } from './enums';
             useFactory() {
                const schema = DoctorSchema;
 
-               schema.pre('save', function (next) {
+               schema.pre('save', function () {
                   if (this.isModified('speciality')) {
                      this.department = SPECIALITY_TO_DEPARTMENT[this.speciality];
                   }
-                  next();
                });
 
                schema.virtual('kycDetails', {
