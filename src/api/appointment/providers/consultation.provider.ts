@@ -4,7 +4,11 @@ import { AppointmentService } from '../services/appointment.service';
 import { MailService } from 'src/shared/mail/mail.service';
 import { InjectConnection } from '@nestjs/mongoose';
 import { ClientSession, Connection } from 'mongoose';
-import { BaseConsultationReport, OrthopedicConsultationReportDto } from '../dto/submit-consultation.dto';
+import {
+   BaseConsultationReport,
+   NuerologyConsultationReportDto,
+   OrthopedicConsultationReportDto,
+} from '../dto/submit-consultation.dto';
 import { Departments } from 'src/api/doctor/enums';
 import { DiagnosisService } from 'src/api/diagnosis/diagnosis.service';
 import { AppointmentDocument } from '../schemas/appointment.schema';
@@ -61,7 +65,7 @@ export class ConsultationProvider {
          if (!appointment) throw new NotFoundException('Appointment not found');
 
          const diagnosis = await this.diagnosisService.createDiagnosis(
-            orthopedicReportDto,
+            { ...orthopedicReportDto, patient: appointment.patient._id },
             Departments.ORTHOPEDICS,
             session,
          );
@@ -71,6 +75,36 @@ export class ConsultationProvider {
          orthopedicReportDto.diagnosisRef = DiagnosisRef['BONE_METRICS'];
 
          const response = await this.createConsultationReport(orthopedicReportDto, appointment, session);
+         await session.commitTransaction();
+         return response;
+      } catch (error) {
+         await session.abortTransaction();
+         throw error;
+      } finally {
+         await session.endSession();
+      }
+   }
+
+   async createNeurologyReport(neurologyReportDto: NuerologyConsultationReportDto, appointmentId: string) {
+      const session = await this.connection.startSession();
+      await session.startTransaction();
+      try {
+         await session.commitTransaction();
+
+         const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
+         if (!appointment) throw new NotFoundException('Appointment not found');
+
+         const diagnosis = await this.diagnosisService.createDiagnosis(
+            { ...neurologyReportDto, patient: appointment.patient._id },
+            Departments.NEUROLOGY,
+            session,
+         );
+
+         neurologyReportDto.appointment = String(appointment._id);
+         neurologyReportDto.diagnosis = String(diagnosis._id);
+         neurologyReportDto.diagnosisRef = DiagnosisRef['BRAIN_METRICS'];
+
+         const response = await this.createConsultationReport(neurologyReportDto, appointment, session);
          await session.commitTransaction();
          return response;
       } catch (error) {
