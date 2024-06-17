@@ -1,15 +1,15 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { BookSessionDto, SessionDto } from './dto/book-appointment.dto';
-import { User, UserDocument } from '../user/schema/user.schema';
-import { AppointmentService } from './appointment.service';
-import { DoctorService } from '../doctor/doctor.service';
-import { PatientService } from '../patient/patient.service';
+import { BookSessionDto, SessionDto } from '../dto/book-appointment.dto';
+import { User, UserDocument } from '../../user/schema/user.schema';
+import { AppointmentService } from '../services/appointment.service';
+import { DoctorService } from '../../doctor/doctor.service';
+import { PatientService } from '../../patient/patient.service';
 import { FilterQuery, Types } from 'mongoose';
-import { AppointmentMode, AppointmentStatus } from './enums';
+import { AppointmentMode, AppointmentStatus } from '../enums';
 import { MailService } from 'src/shared/mail/mail.service';
 import { endOfDay, format, startOfDay } from 'date-fns';
-import { AppointmentDocument } from './schemas/appointment.schema';
-import { RoleNames } from '../user/enums';
+import { AppointmentDocument } from '../schemas/appointment.schema';
+import { RoleNames } from '../../user/enums';
 
 @Injectable()
 export class AppointmentProvider {

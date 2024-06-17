@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Appointment, AppointmentDocument } from './schemas/appointment.schema';
+import { Appointment, AppointmentDocument } from '../schemas/appointment.schema';
 import { FilterQuery, Model, Query, QueryOptions, UpdateQuery } from 'mongoose';
 
 @Injectable()
