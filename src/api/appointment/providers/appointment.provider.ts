@@ -144,6 +144,14 @@ export class AppointmentProvider {
       };
    }
 
+   async getUserAppointments(user: UserDocument) {
+      if (user.role === RoleNames.PATIENT) {
+         return await this.getUserPatientAppointments(String(user._id));
+      } else if (user.role === RoleNames.DOCTOR) {
+         return await this.getUserDoctorAppointments(String(user._id));
+      }
+   }
+
    async getUserPatientAppointments(userId: string) {
       const patient = await this.patientService.getPatient({ user: new Types.ObjectId(userId) });
 

@@ -55,6 +55,14 @@ export class AppointmentController {
       return data;
    }
 
+   @Get('/user')
+   @Roles([RoleNames.PATIENT, RoleNames.DOCTOR])
+   async getUserAppointments(@Auth() user: UserDocument) {
+      const data = await this.appointmentProvider.getUserAppointments(user);
+
+      return data;
+   }
+
    @Put('/:appointmentId/reschedule')
    @Roles([RoleNames.DOCTOR, RoleNames.PATIENT])
    async rescheduleAppointment(
