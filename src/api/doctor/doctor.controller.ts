@@ -86,6 +86,7 @@ export class DoctorController {
 
    @Get('/kyc')
    @Roles([RoleNames.ADMIN])
+   @IsPublic()
    async getKycs(@Query() query: GetKycDto) {
       const data = await this.doctorProvider.getKycs(query);
 
