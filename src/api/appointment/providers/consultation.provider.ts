@@ -7,6 +7,7 @@ import { ClientSession, Connection } from 'mongoose';
 import {
    BaseConsultationReport,
    CardiographyConsultationReportDto,
+   DentistryConsultationReportDto,
    DermatologyConsultationReportDto,
    HepatologyConsultationReportDto,
    NephrologyConsultationReportDto,
@@ -257,7 +258,7 @@ export class ConsultationProvider {
 
          const diagnosis = await this.diagnosisService.createDiagnosis(
             { ...dermatologyReportDto, patient: appointment.patient._id },
-            Departments.OPTOMETRY,
+            Departments.DERMATOLOGY,
             session,
          );
 
@@ -266,6 +267,36 @@ export class ConsultationProvider {
          dermatologyReportDto.diagnosisRef = DiagnosisRef['SKIN_METRICS'];
 
          const response = await this.createConsultationReport(dermatologyReportDto, appointment, session);
+         await session.commitTransaction();
+         return response;
+      } catch (error) {
+         await session.abortTransaction();
+         throw error;
+      } finally {
+         await session.endSession();
+      }
+   }
+
+   async createDentistryReport(dentistryReportDto: DentistryConsultationReportDto, appointmentId: string) {
+      const session = await this.connection.startSession();
+      await session.startTransaction();
+      try {
+         await session.commitTransaction();
+
+         const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
+         if (!appointment) throw new NotFoundException('Appointment not found');
+
+         const diagnosis = await this.diagnosisService.createDiagnosis(
+            { ...dentistryReportDto, patient: appointment.patient._id },
+            Departments.DENTISTRY,
+            session,
+         );
+
+         dentistryReportDto.appointment = String(appointment._id);
+         dentistryReportDto.diagnosis = String(diagnosis._id);
+         dentistryReportDto.diagnosisRef = DiagnosisRef['TEETH_METRICS'];
+
+         const response = await this.createConsultationReport(dentistryReportDto, appointment, session);
          await session.commitTransaction();
          return response;
       } catch (error) {
