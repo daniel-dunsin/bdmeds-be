@@ -8,6 +8,9 @@ import { DoctorModule } from '../doctor/doctor.module';
 import { PatientModule } from '../patient/patient.module';
 import { SharedModule } from 'src/shared/shared.module';
 import { Consultation, ConsultationSchema } from './schemas/consultation.schema';
+import { ConsultationController } from './controllers/consulation.controller';
+import { ConsultationProvider } from './providers/consultation.provider';
+import { ConsultationService } from './services/consulation.service';
 
 @Module({
    imports: [
@@ -31,7 +34,7 @@ import { Consultation, ConsultationSchema } from './schemas/consultation.schema'
       PatientModule,
       SharedModule,
    ],
-   controllers: [AppointmentController],
-   providers: [AppointmentService, AppointmentProvider],
+   controllers: [AppointmentController, ConsultationController],
+   providers: [AppointmentService, AppointmentProvider, ConsultationProvider, ConsultationService],
 })
 export class AppointmentModule {}
