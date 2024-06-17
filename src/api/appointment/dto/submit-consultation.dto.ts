@@ -66,7 +66,7 @@ export class OptometryConsultationReportDto extends BaseConsultationReport {
    contactLensDiameter: number;
 }
 
-export class CardiographyConsultationReportDto extends BaseConsultationReport {
+export class CardiologyConsultationReportDto extends BaseConsultationReport {
    @IsString(false)
    heartHealthStatus: string;
 

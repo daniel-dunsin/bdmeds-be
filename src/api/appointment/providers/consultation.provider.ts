@@ -6,7 +6,7 @@ import { InjectConnection } from '@nestjs/mongoose';
 import { ClientSession, Connection } from 'mongoose';
 import {
    BaseConsultationReport,
-   CardiographyConsultationReportDto,
+   CardiologyConsultationReportDto,
    DentistryConsultationReportDto,
    DermatologyConsultationReportDto,
    HepatologyConsultationReportDto,
@@ -152,10 +152,7 @@ export class ConsultationProvider {
       }
    }
 
-   async createCardiologyReport(
-      cardiologyReportDto: CardiographyConsultationReportDto,
-      appointmentId: string,
-   ) {
+   async createCardiologyReport(cardiologyReportDto: CardiologyConsultationReportDto, appointmentId: string) {
       const session = await this.connection.startSession();
       await session.startTransaction();
       try {
