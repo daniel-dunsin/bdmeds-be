@@ -42,14 +42,6 @@ export class DoctorController {
       return data;
    }
 
-   @Get('/:doctorId')
-   @IsPublic()
-   async getDoctor(@Param('doctorId', MongoIdPipe) doctorId: string) {
-      const data = await this.doctorProvider.getDoctor(doctorId);
-
-      return data;
-   }
-
    @Put('/kyc/update')
    @Roles([RoleNames.DOCTOR])
    async updateKycInfo(@Auth('_id') userId: string, @Body() updateKycDto: KycDocsDto) {
@@ -96,6 +88,14 @@ export class DoctorController {
    @Roles([RoleNames.ADMIN])
    async getKycs(@Query() query: GetKycDto) {
       const data = await this.doctorProvider.getKycs(query);
+
+      return data;
+   }
+
+   @Get('/:doctorId')
+   @IsPublic()
+   async getDoctor(@Param('doctorId', MongoIdPipe) doctorId: string) {
+      const data = await this.doctorProvider.getDoctor(doctorId);
 
       return data;
    }
