@@ -25,7 +25,7 @@ export class ConsultationController {
    @Post('report/:appointmentId/orthopedic')
    @Roles([RoleNames.DOCTOR])
    async createOrthopedicReport(
-      @Param('appointmentId', MongoIdPipe) appointmentId: string,
+      @Param('appointmentId') appointmentId: string,
       @Body() orthopedicReportDto: OrthopedicConsultationReportDto,
    ) {
       const data = await this.consultationProvider.createOrthopedicReport(orthopedicReportDto, appointmentId);
@@ -36,7 +36,7 @@ export class ConsultationController {
    @Post('report/:appointmentId/neurology')
    @Roles([RoleNames.DOCTOR])
    async createNuerologyReport(
-      @Param('appointmentId', MongoIdPipe) appointmentId: string,
+      @Param('appointmentId') appointmentId: string,
       @Body() neurologyReportDto: NuerologyConsultationReportDto,
    ) {
       const data = await this.consultationProvider.createNeurologyReport(neurologyReportDto, appointmentId);
@@ -47,7 +47,7 @@ export class ConsultationController {
    @Post('report/:appointmentId/optometry')
    @Roles([RoleNames.DOCTOR])
    async createOptometryReport(
-      @Param('appointmentId', MongoIdPipe) appointmentId: string,
+      @Param('appointmentId') appointmentId: string,
       @Body() optometryReportDto: OptometryConsultationReportDto,
    ) {
       const data = await this.consultationProvider.createOptometryReport(optometryReportDto, appointmentId);
@@ -58,7 +58,7 @@ export class ConsultationController {
    @Post('report/:appointmentId/cardiology')
    @Roles([RoleNames.DOCTOR])
    async createCardiologyReport(
-      @Param('appointmentId', MongoIdPipe) appointmentId: string,
+      @Param('appointmentId') appointmentId: string,
       @Body() cardiologyReportDto: CardiologyConsultationReportDto,
    ) {
       const data = await this.consultationProvider.createCardiologyReport(cardiologyReportDto, appointmentId);
@@ -69,7 +69,7 @@ export class ConsultationController {
    @Post('report/:appointmentId/nephrology')
    @Roles([RoleNames.DOCTOR])
    async createNephrologyReport(
-      @Param('appointmentId', MongoIdPipe) appointmentId: string,
+      @Param('appointmentId') appointmentId: string,
       @Body() nephrologyReportDto: NephrologyConsultationReportDto,
    ) {
       const data = await this.consultationProvider.createNephrologyReport(nephrologyReportDto, appointmentId);
@@ -80,7 +80,7 @@ export class ConsultationController {
    @Post('report/:appointmentId/hepatology')
    @Roles([RoleNames.DOCTOR])
    async createHepatologyReport(
-      @Param('appointmentId', MongoIdPipe) appointmentId: string,
+      @Param('appointmentId') appointmentId: string,
       @Body() hepatologyReportDto: HepatologyConsultationReportDto,
    ) {
       const data = await this.consultationProvider.createHepatologyReport(hepatologyReportDto, appointmentId);
@@ -91,7 +91,7 @@ export class ConsultationController {
    @Post('report/:appointmentId/dermatology')
    @Roles([RoleNames.DOCTOR])
    async createDermatologyReport(
-      @Param('appointmentId', MongoIdPipe) appointmentId: string,
+      @Param('appointmentId') appointmentId: string,
       @Body() dermatologyReportDto: DermatologyConsultationReportDto,
    ) {
       const data = await this.consultationProvider.createDermatologyReport(
@@ -105,7 +105,7 @@ export class ConsultationController {
    @Post('report/:appointmentId/dentistry')
    @Roles([RoleNames.DOCTOR])
    async createDentistryReport(
-      @Param('appointmentId', MongoIdPipe) appointmentId: string,
+      @Param('appointmentId') appointmentId: string,
       @Body() dentistryReportDto: DentistryConsultationReportDto,
    ) {
       const data = await this.consultationProvider.createDentistryReport(dentistryReportDto, appointmentId);
@@ -124,7 +124,7 @@ export class ConsultationController {
    @Get('report/patient/:patientId/:department')
    async getPatientReports(
       @Param('department') department: Departments,
-      @Param('patientId', MongoIdPipe) patientId: string,
+      @Param('patientId') patientId: string,
    ) {
       const data = await this.consultationProvider.getPatientReports(department, patientId);
 
@@ -134,7 +134,7 @@ export class ConsultationController {
    @Get('report/:department/:reportId')
    async getReport(
       @Param('department') department: Departments,
-      @Auth('reportId', MongoIdPipe) reportId: string,
+      @Param('reportId') reportId: string,
    ) {
       const data = await this.consultationProvider.getReport(reportId, department);
 
@@ -142,7 +142,7 @@ export class ConsultationController {
    }
 
    @Get('report/appointment/:appointmentId')
-   async getAppointmentReport(@Auth('appointmentId', MongoIdPipe) appointmentId: string) {
+   async getAppointmentReport(@Param('appointmentId') appointmentId: string) {
       const data = await this.consultationProvider.getAppoinmentReport(appointmentId);
 
       return data;
