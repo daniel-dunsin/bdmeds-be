@@ -52,7 +52,7 @@ export class AppointmentProvider {
 
       if (patientPrevAppointment) {
          throw new BadRequestException(
-            `${isPatient ? 'You' : 'This patient'} already have an appointment from ${format(sessionDto.startTime, 'h:mm a..aa')} to ${format(sessionDto.endTime, 'h:mm a..aa')} on ${format(sessionDto.appointmentDate, 'do, MMM yyyy')}, hence, you can select a time within this time interval`,
+            `${isPatient ? 'You' : 'This patient'} already have an appointment from ${format(sessionDto.startTime, 'h:mm a')} to ${format(sessionDto.endTime, 'h:mm a')} on ${format(sessionDto.appointmentDate, 'do, MMM yyyy')}, hence, you can select a time within this time interval`,
          );
       }
 
@@ -63,7 +63,7 @@ export class AppointmentProvider {
 
       if (doctorPrevAppointment) {
          throw new BadRequestException(
-            `${isPatient ? 'This doctor' : 'You'} already have an appointment from ${format(sessionDto.startTime, 'h:mm a..aa')} to ${format(sessionDto.endTime, 'h:mm a..aa')} on ${format(sessionDto.appointmentDate, 'do, MMM yyyy')}, hence, you can select a time within this time interval`,
+            `${isPatient ? 'This doctor' : 'You'} already have an appointment from ${format(sessionDto.startTime, 'h:mm a')} to ${format(sessionDto.endTime, 'h:mm a')} on ${format(sessionDto.appointmentDate, 'do, MMM yyyy')}, hence, you can select a time within this time interval`,
          );
       }
    }
@@ -100,8 +100,8 @@ export class AppointmentProvider {
             patientEmail: user?.email,
             patientPhoneNumber: user.phoneNumber,
             appointmentDate: format(bookSessionDto.appointmentDate, 'do, MMM yyyy'),
-            startTime: format(bookSessionDto.startTime, 'h:mm a..aa'),
-            endTime: format(bookSessionDto.endTime, 'h:mm a..aa'),
+            startTime: format(bookSessionDto.startTime, 'h:mm a'),
+            endTime: format(bookSessionDto.endTime, 'h:mm a'),
          },
       });
 
@@ -198,11 +198,11 @@ export class AppointmentProvider {
          doctorName: appointment.doctor.user.firstName,
          patientName: `${appointment.patient.user?.firstName} ${appointment.patient.user?.lastName}`,
          prevAppointmentDate: format(appointment.appointmentDate, 'do, MMM yyyy'),
-         prevStartTime: format(appointment.startTime, 'h:mm a..aa'),
-         prevEndTime: format(appointment.endTime, 'h:mm a..aa'),
+         prevStartTime: format(appointment.startTime, 'h:mm a'),
+         prevEndTime: format(appointment.endTime, 'h:mm a'),
          newAppointmentDate: format(sessionDto.appointmentDate, 'do, MMM yyyy'),
-         newStartTime: format(sessionDto.startTime, 'h:mm a..aa'),
-         newEndTime: format(sessionDto.endTime, 'h:mm a..aa'),
+         newStartTime: format(sessionDto.startTime, 'h:mm a'),
+         newEndTime: format(sessionDto.endTime, 'h:mm a'),
       };
 
       await this.mailService.sendMail({
@@ -254,14 +254,33 @@ export class AppointmentProvider {
             receiverName: `${receiver.firstName} ${receiver.firstName}`,
             triggererName: `${triggerer.firstName} ${triggerer.firstName}`,
             appointmentDate: format(appointment.appointmentDate, 'do, MMM yyyy'),
-            startTime: format(appointment.startTime, 'h:mm a..aa'),
-            endTime: format(appointment.endTime, 'h:mm a..aa'),
+            startTime: format(appointment.startTime, 'h:mm a'),
+            endTime: format(appointment.endTime, 'h:mm a'),
          },
       });
 
       return {
          success: true,
          message: 'Appointment cancelled successfully',
+      };
+   }
+
+   async updateAppointmentStatus(status: AppointmentStatus, appointmentId: string, user: UserDocument) {
+      const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
+
+      if (!appointment) throw new NotFoundException('Appointment not found');
+
+      if (user.role === RoleNames.PATIENT) {
+         appointment.patientStatus = status;
+      } else {
+         appointment.doctorStatus = status;
+      }
+
+      await appointment.save();
+
+      return {
+         success: true,
+         message: 'status updated',
       };
    }
 }

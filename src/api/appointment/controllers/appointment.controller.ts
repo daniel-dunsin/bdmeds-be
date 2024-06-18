@@ -6,6 +6,7 @@ import { BookSessionDto, SessionDto } from '../dto/book-appointment.dto';
 import { AppointmentProvider } from '../providers/appointment.provider';
 import { RoleNames } from '../../user/enums';
 import { MongoIdPipe } from 'src/core/pipes';
+import { UpdateAppointmentStatusDto } from '../dto/update-appointment.dto';
 
 @Controller('appointment')
 @ApiTags('appointment')
@@ -86,6 +87,22 @@ export class AppointmentController {
    @Get('/:appointmentId')
    async getAppointment(@Param('appointmentId') appointmentId: string) {
       const data = await this.appointmentProvider.getAppointment(appointmentId);
+
+      return data;
+   }
+
+   @Put('/:appointmentId/status')
+   @Roles([RoleNames.DOCTOR, RoleNames.PATIENT])
+   async updateAppointmentStatus(
+      @Body() updateStatusDto: UpdateAppointmentStatusDto,
+      @Param('appointmentId') appointmentId: string,
+      @Auth() user: UserDocument,
+   ) {
+      const data = await this.appointmentProvider.updateAppointmentStatus(
+         updateStatusDto.status,
+         appointmentId,
+         user,
+      );
 
       return data;
    }

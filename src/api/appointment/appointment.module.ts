@@ -12,6 +12,7 @@ import { ConsultationController } from './controllers/consulation.controller';
 import { ConsultationProvider } from './providers/consultation.provider';
 import { ConsultationService } from './services/consulation.service';
 import { DiagnosisModule } from '../diagnosis/diagnosis.module';
+import { AppointmentStatus } from './enums';
 
 @Module({
    imports: [
@@ -20,6 +21,21 @@ import { DiagnosisModule } from '../diagnosis/diagnosis.module';
             name: Appointment.name,
             useFactory() {
                const schema = AppointmentSchema;
+               schema.pre('save', () => {
+                  if (this.isModified('patientStatus') || this.isModified('doctorStatus')) {
+                     if (
+                        this.patientStatus === AppointmentStatus.SUCCESSFUL &&
+                        this.doctorStatus === AppointmentStatus.SUCCESSFUL
+                     ) {
+                        this.status === AppointmentStatus.SUCCESSFUL;
+                     } else if (
+                        this.patientStatus === AppointmentStatus.FAILED &&
+                        this.doctorStatus === AppointmentStatus.FAILED
+                     ) {
+                        this.status === AppointmentStatus.FAILED;
+                     }
+                  }
+               });
                return schema;
             },
          },

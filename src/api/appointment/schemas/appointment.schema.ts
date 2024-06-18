@@ -48,6 +48,20 @@ export class Appointment {
    })
    mode: AppointmentMode;
 
+   @Prop({
+      type: String,
+      enum: Object.values(AppointmentStatus),
+      default: AppointmentStatus.PENDING,
+   })
+   doctorStatus: AppointmentStatus;
+
+   @Prop({
+      type: String,
+      enum: Object.values(AppointmentStatus),
+      default: AppointmentStatus.PENDING,
+   })
+   patientStatus: AppointmentStatus;
+
    // add the invoice
 }
 

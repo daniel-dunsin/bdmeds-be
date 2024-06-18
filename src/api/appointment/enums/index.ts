@@ -10,6 +10,7 @@ import { TeethMetrics } from 'src/api/diagnosis/schemas/teeth.schema';
 export enum AppointmentStatus {
    PENDING = 'pending',
    SUCCESSFUL = 'successful',
+   FAILED = 'failed',
    CANCELLED = 'cancelled',
 }
 
