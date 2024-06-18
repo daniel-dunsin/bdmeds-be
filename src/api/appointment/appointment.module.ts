@@ -21,7 +21,7 @@ import { AppointmentStatus } from './enums';
             name: Appointment.name,
             useFactory() {
                const schema = AppointmentSchema;
-               schema.pre('save', () => {
+               schema.pre('save', function () {
                   if (this.isModified('patientStatus') || this.isModified('doctorStatus')) {
                      if (
                         this.patientStatus === AppointmentStatus.SUCCESSFUL &&
