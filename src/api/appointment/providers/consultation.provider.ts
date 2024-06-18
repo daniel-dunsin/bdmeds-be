@@ -330,4 +330,14 @@ export class ConsultationProvider {
          data,
       };
    }
+
+   async getAppoinmentReport(appointmentId: string) {
+      const consultation = await this.consultationService.getConsultation({ appointment: appointmentId });
+
+      if (!consultation) throw new NotFoundException("Opps! We can't find the consultation for this report");
+
+      const reportId = consultation?.diagnosis?._id;
+
+      return await this.getReport(String(reportId), consultation.appointment.department);
+   }
 }

@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Consultation, ConsultationDocument } from '../schemas/consultation.schema';
-import { ClientSession, FilterQuery, Model, QueryOptions, UpdateQuery } from 'mongoose';
+import { ClientSession, FilterQuery, Model, Query, QueryOptions, UpdateQuery } from 'mongoose';
 
 @Injectable()
 export class ConsultationService {
    constructor(
       @InjectModel(Consultation.name) private readonly _consultationModel: Model<ConsultationDocument>,
    ) {}
+
+   private async populate(model: Query<any, ConsultationDocument>) {
+      return await model.populate([{ path: 'diagnosis' }, { path: 'appointment' }]);
+   }
 
    async createConsultation<T>(createConsultaionDto: T, session?: ClientSession) {
       const consultation = new this._consultationModel(createConsultaionDto);
@@ -16,13 +20,13 @@ export class ConsultationService {
    }
 
    async getConsultation(filter: FilterQuery<ConsultationDocument>): Promise<ConsultationDocument> {
-      const consulation = await this._consultationModel.findOne(filter);
+      const consulation = await this.populate(this._consultationModel.findOne(filter));
 
       return consulation;
    }
 
    async getConsultations(filter: FilterQuery<ConsultationDocument>): Promise<ConsultationDocument[]> {
-      const consulation = await this._consultationModel.find(filter);
+      const consulation = await this.populate(this._consultationModel.find(filter));
 
       return consulation;
    }
@@ -32,7 +36,9 @@ export class ConsultationService {
       update: UpdateQuery<ConsultationDocument>,
       options: QueryOptions<ConsultationDocument>,
    ): Promise<ConsultationDocument> {
-      const consulation = await this._consultationModel.findOneAndUpdate(filter, update, options);
+      const consulation = await this.populate(
+         this._consultationModel.findOneAndUpdate(filter, update, options),
+      );
 
       return consulation;
    }

@@ -140,4 +140,11 @@ export class ConsultationController {
 
       return data;
    }
+
+   @Get('report/appointment/:appointmentId')
+   async getAppointmentReport(@Auth('appointmentId', MongoIdPipe) appointmentId: string) {
+      const data = await this.consultationProvider.getAppoinmentReport(appointmentId);
+
+      return data;
+   }
 }
