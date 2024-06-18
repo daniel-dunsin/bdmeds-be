@@ -60,7 +60,6 @@ export class ConsultationProvider {
       const session = await this.connection.startSession();
       await session.startTransaction();
       try {
-         await session.commitTransaction();
 
          const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
          if (!appointment) throw new NotFoundException('Appointment not found');
@@ -90,7 +89,6 @@ export class ConsultationProvider {
       const session = await this.connection.startSession();
       await session.startTransaction();
       try {
-         await session.commitTransaction();
 
          const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
          if (!appointment) throw new NotFoundException('Appointment not found');
@@ -120,8 +118,6 @@ export class ConsultationProvider {
       const session = await this.connection.startSession();
       await session.startTransaction();
       try {
-         await session.commitTransaction();
-
          const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
          if (!appointment) throw new NotFoundException('Appointment not found');
 
@@ -150,8 +146,6 @@ export class ConsultationProvider {
       const session = await this.connection.startSession();
       await session.startTransaction();
       try {
-         await session.commitTransaction();
-
          const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
          if (!appointment) throw new NotFoundException('Appointment not found');
 
@@ -179,7 +173,6 @@ export class ConsultationProvider {
       const session = await this.connection.startSession();
       await session.startTransaction();
       try {
-         await session.commitTransaction();
 
          const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
          if (!appointment) throw new NotFoundException('Appointment not found');
@@ -209,8 +202,6 @@ export class ConsultationProvider {
       const session = await this.connection.startSession();
       await session.startTransaction();
       try {
-         await session.commitTransaction();
-
          const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
          if (!appointment) throw new NotFoundException('Appointment not found');
 
@@ -242,7 +233,6 @@ export class ConsultationProvider {
       const session = await this.connection.startSession();
       await session.startTransaction();
       try {
-         await session.commitTransaction();
 
          const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
          if (!appointment) throw new NotFoundException('Appointment not found');
@@ -272,8 +262,6 @@ export class ConsultationProvider {
       const session = await this.connection.startSession();
       await session.startTransaction();
       try {
-         await session.commitTransaction();
-
          const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
          if (!appointment) throw new NotFoundException('Appointment not found');
 
