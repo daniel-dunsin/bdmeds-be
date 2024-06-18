@@ -9,6 +9,7 @@ import {
    IsDate as _IsDate,
    IsBase64 as _IsBase64,
    IsOptional,
+   IsDateString,
 } from 'class-validator';
 import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
 
@@ -78,7 +79,7 @@ export const IsEnum = <T>(_enum: T, isOptional: boolean) => {
 };
 
 export const IsDate = (isOptional: boolean) => {
-   const decorators = [_IsDate()];
+   const decorators = [IsDateString()];
 
    if (isOptional) {
       decorators.push(ApiPropertyOptional());
