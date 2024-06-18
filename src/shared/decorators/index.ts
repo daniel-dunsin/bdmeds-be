@@ -10,6 +10,7 @@ import {
    IsBase64 as _IsBase64,
    IsOptional,
    IsDateString,
+   IsNumberString,
 } from 'class-validator';
 import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
 
@@ -27,13 +28,13 @@ export const IsString = (isOptional: boolean) => {
 };
 
 export const IsNumber = (isOptional: boolean) => {
-   const decorators = [_IsNumber()];
+   const decorators = [IsNumberString()];
 
    if (isOptional) {
-      decorators.push(ApiPropertyOptional());
+      decorators.push(ApiPropertyOptional({ example: 0 }));
       decorators.push(IsOptional());
    } else {
-      decorators.push(ApiProperty());
+      decorators.push(ApiProperty({ example: 0 }));
    }
 
    return applyDecorators(...decorators);
