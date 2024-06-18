@@ -82,4 +82,11 @@ export class AppointmentController {
 
       return data;
    }
+
+   @Get('/:appointmentId')
+   async getAppointment(@Param('appointmentId') appointmentId: string) {
+      const data = await this.appointmentProvider.getAppointment(appointmentId);
+
+      return data;
+   }
 }

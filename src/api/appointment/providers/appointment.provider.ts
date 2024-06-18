@@ -160,6 +160,18 @@ export class AppointmentProvider {
       return await this.getPatientAppointments(patient._id);
    }
 
+   async getAppointment(appointmentId: string) {
+      const data = await this.appointmentService.getAppointment({ _id: appointmentId });
+
+      if (!data) throw new NotFoundException('Appointment not found');
+
+      return {
+         success: true,
+         message: 'appointment fetched',
+         data,
+      };
+   }
+
    async rescheduleAppointment(sessionDto: SessionDto, appointmentId: string, user: UserDocument) {
       const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
 
