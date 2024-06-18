@@ -2,9 +2,9 @@ import { IsEnum, IsString } from 'src/shared/decorators';
 import { Departments } from '../enums';
 
 export class GetDoctorDto {
-   @IsString(false)
+   @IsString(true)
    search?: string;
 
-   @IsEnum(Departments, false)
+   @IsEnum(Departments, true)
    department: Departments;
 }

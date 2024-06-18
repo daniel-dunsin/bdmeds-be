@@ -37,49 +37,4 @@ export class UtilService {
       today.setMinutes(min);
       return today;
    }
-
-   checkDateConflicts(date: availableDays, dateRanges: availableDays[]) {
-      let sessionSelected: availableDays | undefined;
-
-      for (const availableDay of dateRanges) {
-         if (availableDay.day === date.day) {
-            const prevDate = {
-               start: this.setHourAndMin(
-                  availableDay.startTime.getHours(),
-                  availableDay.startTime.getMinutes(),
-               ),
-               end: this.setHourAndMin(
-                  availableDay.endTime.getHours(),
-                  availableDay.endTime.getMinutes(),
-               ),
-            };
-
-            const newDate = {
-               start: this.setHourAndMin(
-                  date.startTime.getHours(),
-                  date.startTime.getMinutes(),
-               ),
-               end: this.setHourAndMin(
-                  date.endTime.getHours(),
-                  date.endTime.getMinutes(),
-               ),
-            };
-
-            if (
-               dateFns.isWithinInterval(newDate.start, prevDate) ||
-               dateFns.isWithinInterval(newDate.end, prevDate)
-            ) {
-               sessionSelected = availableDay;
-            }
-            if (
-               dateFns.isWithinInterval(prevDate.start, newDate) ||
-               dateFns.isWithinInterval(prevDate.end, newDate)
-            ) {
-               sessionSelected = availableDay;
-            }
-         }
-      }
-
-      return sessionSelected;
-   }
 }
