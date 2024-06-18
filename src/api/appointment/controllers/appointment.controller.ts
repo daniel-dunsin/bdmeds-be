@@ -14,7 +14,7 @@ export class AppointmentController {
    constructor(private readonly appointmentProvider: AppointmentProvider) {}
 
    @Post('/:doctorId/book')
-   @Roles([RoleNames.DOCTOR])
+   @Roles([RoleNames.DOCTOR, RoleNames.PATIENT])
    async bookSession(
       @Auth() user: UserDocument,
       @Param('doctorId', MongoIdPipe) doctorId: string,
