@@ -8,8 +8,8 @@ export class BaseConsultationReport {
    @IsString(false)
    consultationNote: string;
 
-   @IsString(false)
-   treatmentPlan: string;
+   @IsString(true)
+   treatmentPlan?: string;
 
    @IsString(true)
    symptoms?: string;
