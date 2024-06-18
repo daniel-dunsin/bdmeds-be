@@ -115,6 +115,7 @@ export class AppointmentProvider {
    async getDoctorAppointments(doctorId: string) {
       const data = await this.appointmentService.getAppointments({
          doctor: new Types.ObjectId(doctorId),
+         status: { $ne: AppointmentStatus.CANCELLED },
       });
 
       return {
@@ -135,6 +136,7 @@ export class AppointmentProvider {
    async getPatientAppointments(patientId: string) {
       const data = await this.appointmentService.getAppointments({
          patient: new Types.ObjectId(patientId),
+         status: { $ne: AppointmentStatus.CANCELLED },
       });
 
       return {
