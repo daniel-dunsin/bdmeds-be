@@ -131,19 +131,19 @@ export class ConsultationController {
       return data;
    }
 
+   @Get('report/appointment/:appointmentId')
+   async getAppointmentReport(@Auth('appointmentId', MongoIdPipe) appointmentId: string) {
+      const data = await this.consultationProvider.getAppoinmentReport(appointmentId);
+
+      return data;
+   }
+
    @Get('report/:department/:reportId')
    async getReport(
       @Param('department') department: Departments,
       @Auth('reportId', MongoIdPipe) reportId: string,
    ) {
       const data = await this.consultationProvider.getReport(reportId, department);
-
-      return data;
-   }
-
-   @Get('report/appointment/:appointmentId')
-   async getAppointmentReport(@Auth('appointmentId', MongoIdPipe) appointmentId: string) {
-      const data = await this.consultationProvider.getAppoinmentReport(appointmentId);
 
       return data;
    }
