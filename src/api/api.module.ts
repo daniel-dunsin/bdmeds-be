@@ -8,6 +8,7 @@ import { DoctorModule } from './doctor/doctor.module';
 import { PatientModule } from './patient/patient.module';
 import { DiagnosisModule } from './diagnosis/diagnosis.module';
 import { AppointmentModule } from './appointment/appointment.module';
+import { VideoModule } from './video/video.module';
 
 @Module({
    imports: [
@@ -19,6 +20,7 @@ import { AppointmentModule } from './appointment/appointment.module';
       PatientModule,
       DiagnosisModule,
       AppointmentModule,
+      VideoModule,
    ],
 })
 export class ApiModule {}

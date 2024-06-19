@@ -6,36 +6,36 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
 
 @Module({
-  imports: [
-    MailerModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory(configService: ConfigService) {
-        return {
-          transport: {
-            service: 'gmail',
-            auth: {
-              user: configService.get<string>('MAILER_USER'),
-              pass: configService.get<string>('MAILER_PASS'),
-            },
-          },
+   imports: [
+      MailerModule.forRootAsync({
+         imports: [ConfigModule],
+         inject: [ConfigService],
+         useFactory(configService: ConfigService) {
+            return {
+               transport: {
+                  service: 'gmail',
+                  auth: {
+                     user: configService.get<string>('MAILER_USER'),
+                     pass: configService.get<string>('MAILER_PASS'),
+                  },
+               },
 
-          defaults: {
-            from: 'No Reply <noreply@bdmeds.com>',
-          },
+               defaults: {
+                  from: 'No Reply <noreply@bdmeds.com>',
+               },
 
-          template: {
-            dir: join(process.cwd(), 'src/shared/mail/templates'),
-            adapter: new HandlebarsAdapter(),
-            options: {
-              strict: true,
-            },
-          },
-        };
-      },
-    }),
-  ],
-  providers: [MailService],
-  exports: [MailService],
+               template: {
+                  dir: join(process.cwd(), 'src/shared/mail/templates'),
+                  adapter: new HandlebarsAdapter(),
+                  options: {
+                     strict: true,
+                  },
+               },
+            };
+         },
+      }),
+   ],
+   providers: [MailService],
+   exports: [MailService],
 })
 export class MailModule {}

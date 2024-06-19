@@ -1,7 +1,7 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from 'src/app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { ValidationPipe, Version, VersioningType } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { ValidationException } from 'src/core/exceptions/validation.exception';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
