@@ -13,6 +13,13 @@ export class HeartMetrics {
    })
    patient: PatientDocument;
 
+   @Prop({
+      type: Types.ObjectId,
+      required: false,
+      ref: 'Consultation',
+   })
+   consultation?: ConsultationDocument | string;
+
    @Prop()
    heartHealthStatus: string;
 

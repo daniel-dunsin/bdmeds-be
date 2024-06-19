@@ -31,6 +31,13 @@ export class KidneyMetrics {
 
    @Prop({ type: String, enum: Object.values(Frequency) })
    dialysisFrequency: Frequency; // Frequency
+
+   @Prop({
+      type: Types.ObjectId,
+      required: false,
+      ref: 'Consultation',
+   })
+   consultation?: ConsultationDocument;
 }
 
 export type KidneyMetricsDocument = HydratedDocument<KidneyMetrics>;

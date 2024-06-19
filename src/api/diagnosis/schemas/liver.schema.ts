@@ -27,6 +27,13 @@ export class LiverMetrics {
 
    @Prop()
    fibrosisScore: number; // Scaled (e.g., METAVIR score)
+
+   @Prop({
+      type: Types.ObjectId,
+      required: false,
+      ref: 'Consultation',
+   })
+   consultation?: ConsultationDocument;
 }
 
 export type LiverMetricsDocument = HydratedDocument<LiverMetrics>;

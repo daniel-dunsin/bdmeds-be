@@ -35,6 +35,8 @@ import { AppointmentStatus } from './enums';
                         this.status === AppointmentStatus.FAILED;
                      }
                   }
+
+                  return;
                });
                return schema;
             },

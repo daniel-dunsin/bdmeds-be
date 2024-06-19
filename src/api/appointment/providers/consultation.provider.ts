@@ -20,6 +20,7 @@ import { DiagnosisService } from 'src/api/diagnosis/diagnosis.service';
 import { AppointmentDocument } from '../schemas/appointment.schema';
 import { DiagnosisRef } from '../enums';
 import { PatientService } from 'src/api/patient/patient.service';
+import { DiagnosisDocument } from '../types';
 
 @Injectable()
 export class ConsultationProvider {
@@ -36,6 +37,7 @@ export class ConsultationProvider {
       createConsultationDto: BaseConsultationReport,
       appointment: AppointmentDocument,
       session: ClientSession,
+      diagnosis: DiagnosisDocument,
    ) {
       const consultation = await this.consultationService.createConsultation(createConsultationDto, session);
 
@@ -50,6 +52,9 @@ export class ConsultationProvider {
          },
       });
 
+      diagnosis.consultation = String(consultation._id) as string;
+      await diagnosis.save({ session });
+
       return {
          success: true,
          message: 'consultation created',
@@ -60,7 +65,6 @@ export class ConsultationProvider {
       const session = await this.connection.startSession();
       await session.startTransaction();
       try {
-
          const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
          if (!appointment) throw new NotFoundException('Appointment not found');
 
@@ -74,7 +78,13 @@ export class ConsultationProvider {
          orthopedicReportDto.diagnosis = String(diagnosis._id);
          orthopedicReportDto.diagnosisRef = DiagnosisRef['BONE_METRICS'];
 
-         const response = await this.createConsultationReport(orthopedicReportDto, appointment, session);
+         const response = await this.createConsultationReport(
+            orthopedicReportDto,
+            appointment,
+            session,
+            diagnosis as any,
+         );
+
          await session.commitTransaction();
          return response;
       } catch (error) {
@@ -89,7 +99,6 @@ export class ConsultationProvider {
       const session = await this.connection.startSession();
       await session.startTransaction();
       try {
-
          const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
          if (!appointment) throw new NotFoundException('Appointment not found');
 
@@ -103,7 +112,12 @@ export class ConsultationProvider {
          neurologyReportDto.diagnosis = String(diagnosis._id);
          neurologyReportDto.diagnosisRef = DiagnosisRef['BRAIN_METRICS'];
 
-         const response = await this.createConsultationReport(neurologyReportDto, appointment, session);
+         const response = await this.createConsultationReport(
+            neurologyReportDto,
+            appointment,
+            session,
+            diagnosis as any,
+         );
          await session.commitTransaction();
          return response;
       } catch (error) {
@@ -131,7 +145,12 @@ export class ConsultationProvider {
          optometryReportDto.diagnosis = String(diagnosis._id);
          optometryReportDto.diagnosisRef = DiagnosisRef['EYES_METRICS'];
 
-         const response = await this.createConsultationReport(optometryReportDto, appointment, session);
+         const response = await this.createConsultationReport(
+            optometryReportDto,
+            appointment,
+            session,
+            diagnosis as any,
+         );
          await session.commitTransaction();
          return response;
       } catch (error) {
@@ -159,7 +178,12 @@ export class ConsultationProvider {
          cardiologyReportDto.diagnosis = String(diagnosis._id);
          cardiologyReportDto.diagnosisRef = DiagnosisRef['HEART_METRICS'];
 
-         const response = await this.createConsultationReport(cardiologyReportDto, appointment, session);
+         const response = await this.createConsultationReport(
+            cardiologyReportDto,
+            appointment,
+            session,
+            diagnosis as any,
+         );
          await session.commitTransaction();
          return response;
       } catch (error) {
@@ -173,7 +197,6 @@ export class ConsultationProvider {
       const session = await this.connection.startSession();
       await session.startTransaction();
       try {
-
          const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
          if (!appointment) throw new NotFoundException('Appointment not found');
 
@@ -187,7 +210,12 @@ export class ConsultationProvider {
          nephrologyReportDto.diagnosis = String(diagnosis._id);
          nephrologyReportDto.diagnosisRef = DiagnosisRef['KIDNEY_METRICS'];
 
-         const response = await this.createConsultationReport(nephrologyReportDto, appointment, session);
+         const response = await this.createConsultationReport(
+            nephrologyReportDto,
+            appointment,
+            session,
+            diagnosis as any,
+         );
          await session.commitTransaction();
          return response;
       } catch (error) {
@@ -215,7 +243,12 @@ export class ConsultationProvider {
          hepatologyReportDto.diagnosis = String(diagnosis._id);
          hepatologyReportDto.diagnosisRef = DiagnosisRef['LIVER_METRICS'];
 
-         const response = await this.createConsultationReport(hepatologyReportDto, appointment, session);
+         const response = await this.createConsultationReport(
+            hepatologyReportDto,
+            appointment,
+            session,
+            diagnosis as any,
+         );
          await session.commitTransaction();
          return response;
       } catch (error) {
@@ -233,7 +266,6 @@ export class ConsultationProvider {
       const session = await this.connection.startSession();
       await session.startTransaction();
       try {
-
          const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
          if (!appointment) throw new NotFoundException('Appointment not found');
 
@@ -247,7 +279,12 @@ export class ConsultationProvider {
          dermatologyReportDto.diagnosis = String(diagnosis._id);
          dermatologyReportDto.diagnosisRef = DiagnosisRef['SKIN_METRICS'];
 
-         const response = await this.createConsultationReport(dermatologyReportDto, appointment, session);
+         const response = await this.createConsultationReport(
+            dermatologyReportDto,
+            appointment,
+            session,
+            diagnosis as any,
+         );
          await session.commitTransaction();
          return response;
       } catch (error) {
@@ -275,7 +312,12 @@ export class ConsultationProvider {
          dentistryReportDto.diagnosis = String(diagnosis._id);
          dentistryReportDto.diagnosisRef = DiagnosisRef['TEETH_METRICS'];
 
-         const response = await this.createConsultationReport(dentistryReportDto, appointment, session);
+         const response = await this.createConsultationReport(
+            dentistryReportDto,
+            appointment,
+            session,
+            diagnosis as any,
+         );
          await session.commitTransaction();
          return response;
       } catch (error) {
@@ -307,8 +349,11 @@ export class ConsultationProvider {
       return await this.getPatientReports(department, patient._id);
    }
 
-   async getReport(reportId: string, department: Departments) {
-      const data = await this.diagnosisService.getSingleDiagnosis({ _id: reportId }, department);
+   async getReport(reportId: Types.ObjectId | string, department: Departments) {
+      const data = await this.diagnosisService.getSingleDiagnosis(
+         { _id: new Types.ObjectId(reportId) },
+         department,
+      );
 
       if (!data) throw new NotFoundException("Oops! We can't find this report");
 
@@ -326,6 +371,6 @@ export class ConsultationProvider {
 
       const reportId = consultation?.diagnosis?._id;
 
-      return await this.getReport(String(reportId), consultation.appointment.department);
+      return await this.getReport(reportId, consultation.appointment.department);
    }
 }

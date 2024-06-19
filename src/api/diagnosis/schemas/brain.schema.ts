@@ -37,6 +37,13 @@ export class BrainMetrics {
       lower: number;
       upper: number;
    };
+
+   @Prop({
+      type: Types.ObjectId,
+      required: false,
+      ref: 'Consultation',
+   })
+   consultation?: ConsultationDocument;
 }
 
 export type BrainMetricsDocument = HydratedDocument<BrainMetrics>;

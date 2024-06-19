@@ -23,6 +23,13 @@ export class BoneMetrics {
 
    @Prop()
    totalFractures: number;
+
+   @Prop({
+      type: Types.ObjectId,
+      required: false,
+      ref: 'Consultation',
+   })
+   consultation?: ConsultationDocument;
 }
 
 export type BoneMetricsDocument = HydratedDocument<BoneMetrics>;

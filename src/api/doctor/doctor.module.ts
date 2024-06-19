@@ -21,6 +21,8 @@ import { SPECIALITY_TO_DEPARTMENT } from './enums';
                   if (this.isModified('speciality')) {
                      this.department = SPECIALITY_TO_DEPARTMENT[this.speciality];
                   }
+
+                  return;
                });
 
                schema.virtual('kycDetails', {

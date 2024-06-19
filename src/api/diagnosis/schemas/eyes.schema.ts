@@ -24,6 +24,13 @@ export class EyesMetrics {
 
    @Prop()
    contactLensDiameter: number; // Millimeters (mm)
+
+   @Prop({
+      type: Types.ObjectId,
+      required: false,
+      ref: 'Consultation',
+   })
+   consultation?: ConsultationDocument;
 }
 
 export type EyesMetricsDocument = HydratedDocument<EyesMetrics>;

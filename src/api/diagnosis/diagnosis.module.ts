@@ -21,13 +21,6 @@ import { Consultation } from '../appointment/schemas/consultation.schema';
             useFactory() {
                const schema = BoneMetricsSchema;
 
-               schema.virtual('consulation', {
-                  ref: Consultation.name,
-                  localField: '_id',
-                  foreignField: 'diagnosis',
-                  justOne: false,
-               });
-
                return schema;
             },
          },
@@ -35,13 +28,6 @@ import { Consultation } from '../appointment/schemas/consultation.schema';
             name: BrainMetrics.name,
             useFactory() {
                const schema = BrainMetricsSchema;
-
-               schema.virtual('consulation', {
-                  ref: Consultation.name,
-                  localField: '_id',
-                  foreignField: 'diagnosis',
-                  justOne: false,
-               });
 
                return schema;
             },
@@ -51,13 +37,6 @@ import { Consultation } from '../appointment/schemas/consultation.schema';
             useFactory() {
                const schema = EyesMetricsSchema;
 
-               schema.virtual('consulation', {
-                  ref: Consultation.name,
-                  localField: '_id',
-                  foreignField: 'diagnosis',
-                  justOne: false,
-               });
-
                return schema;
             },
          },
@@ -65,13 +44,6 @@ import { Consultation } from '../appointment/schemas/consultation.schema';
             name: HeartMetrics.name,
             useFactory() {
                const schema = HeartMetricsSchema;
-
-               schema.virtual('consulation', {
-                  ref: Consultation.name,
-                  localField: '_id',
-                  foreignField: 'diagnosis',
-                  justOne: false,
-               });
 
                return schema;
             },
@@ -81,13 +53,6 @@ import { Consultation } from '../appointment/schemas/consultation.schema';
             useFactory() {
                const schema = KidneyMetricsSchema;
 
-               schema.virtual('consulation', {
-                  ref: Consultation.name,
-                  localField: '_id',
-                  foreignField: 'diagnosis',
-                  justOne: false,
-               });
-
                return schema;
             },
          },
@@ -95,13 +60,6 @@ import { Consultation } from '../appointment/schemas/consultation.schema';
             name: LiverMetrics.name,
             useFactory() {
                const schema = LiverMetricsSchema;
-
-               schema.virtual('consulation', {
-                  ref: Consultation.name,
-                  localField: '_id',
-                  foreignField: 'diagnosis',
-                  justOne: false,
-               });
 
                return schema;
             },
@@ -111,13 +69,6 @@ import { Consultation } from '../appointment/schemas/consultation.schema';
             useFactory() {
                const schema = SkinMetricsSchema;
 
-               schema.virtual('consulation', {
-                  ref: Consultation.name,
-                  localField: '_id',
-                  foreignField: 'diagnosis',
-                  justOne: false,
-               });
-
                return schema;
             },
          },
@@ -125,13 +76,6 @@ import { Consultation } from '../appointment/schemas/consultation.schema';
             name: TeethMetrics.name,
             useFactory() {
                const schema = TeethMetricsSchema;
-
-               schema.virtual('consulation', {
-                  ref: Consultation.name,
-                  localField: '_id',
-                  foreignField: 'diagnosis',
-                  justOne: false,
-               });
 
                return schema;
             },

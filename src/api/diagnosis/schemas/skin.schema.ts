@@ -24,6 +24,13 @@ export class SkinMetrics {
 
    @Prop()
    biopsyResults: string; // Descriptive
+
+   @Prop({
+      type: Types.ObjectId,
+      required: false,
+      ref: 'Consultation',
+   })
+   consultation?: ConsultationDocument;
 }
 
 export type SkinMetricsDocument = HydratedDocument<SkinMetrics>;

@@ -27,6 +27,13 @@ export class TeethMetrics {
 
    @Prop()
    recentProcedures: string; // Descriptive
+
+   @Prop({
+      type: Types.ObjectId,
+      required: false,
+      ref: 'Consultation',
+   })
+   consultation?: ConsultationDocument;
 }
 
 export type TeethMetricsDocument = HydratedDocument<TeethMetrics>;
