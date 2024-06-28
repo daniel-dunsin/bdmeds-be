@@ -52,7 +52,7 @@ export class AppointmentProvider {
 
       if (patientPrevAppointment) {
          throw new BadRequestException(
-            `${isPatient ? 'You' : 'This patient'} already have an appointment from ${format(sessionDto.startTime, 'h:mm a')} to ${format(sessionDto.endTime, 'h:mm a')} on ${format(sessionDto.appointmentDate, 'do, MMM yyyy')}, hence, you can select a time within this time interval`,
+            `${isPatient ? 'You' : 'This patient'} already have an appointment from ${format(patientPrevAppointment.startTime, 'h:mm a')} to ${format(patientPrevAppointment.endTime, 'h:mm a')} on ${format(patientPrevAppointment.appointmentDate, 'do, MMM yyyy')}, hence, you can select a time within this time interval`,
          );
       }
 
@@ -63,7 +63,7 @@ export class AppointmentProvider {
 
       if (doctorPrevAppointment) {
          throw new BadRequestException(
-            `${isPatient ? 'This doctor' : 'You'} already have an appointment from ${format(sessionDto.startTime, 'h:mm a')} to ${format(sessionDto.endTime, 'h:mm a')} on ${format(sessionDto.appointmentDate, 'do, MMM yyyy')}, hence, you can select a time within this time interval`,
+            `${isPatient ? 'This doctor' : 'You'} already have an appointment from ${format(doctorPrevAppointment.startTime, 'h:mm a')} to ${format(doctorPrevAppointment.endTime, 'h:mm a')} on ${format(doctorPrevAppointment.appointmentDate, 'do, MMM yyyy')}, hence, you can select a time within this time interval`,
          );
       }
    }
@@ -174,7 +174,7 @@ export class AppointmentProvider {
       };
    }
 
-   async rescheduleAppointment(sessionDto: SessionDto, appointmentId: string, user: UserDocument) {
+   async rescheduleAppointment(patientPrevAppointment: SessionDto, appointmentId: string, user: UserDocument) {
       const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
 
       if (appointment.status != AppointmentStatus.PENDING)
