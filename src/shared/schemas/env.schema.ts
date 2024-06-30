@@ -10,4 +10,7 @@ export const envSchema = Joi.object({
    CLOUDINARY_CLOUD_NAME: Joi.string().required(),
    CLOUDINARY_API_SECRET: Joi.string().required(),
    CLOUDINARY_API_KEY: Joi.string().required(),
+   ZOOM_CLIENT_ID: Joi.string().required(),
+   ZOOM_ACCOUNT_ID: Joi.string().required(),
+   ZOOM_CLIENT_SECRET: Joi.string().required(),
 });

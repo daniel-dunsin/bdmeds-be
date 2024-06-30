@@ -33,8 +33,8 @@ export class UtilService {
 
    setHourAndMin(hour: number, min: number) {
       const today = new Date();
-      today.setHours(hour);
-      today.setMinutes(min);
+      today.setUTCHours(hour);
+      today.setUTCMinutes(min);
       return today;
    }
 }
