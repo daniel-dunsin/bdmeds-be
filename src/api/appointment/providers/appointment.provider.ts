@@ -12,6 +12,7 @@ import { AppointmentDocument } from '../schemas/appointment.schema';
 import { RoleNames } from '../../user/enums';
 import { ZoomService } from 'src/shared/zoom/zoom.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { Type } from 'class-transformer';
 
 @Injectable()
 export class AppointmentProvider {
@@ -175,6 +176,20 @@ export class AppointmentProvider {
       if (!patient) throw new NotFoundException('Patient not found');
 
       return await this.getPatientAppointments(patient._id);
+   }
+
+   async getUserPendingAppointments(user: UserDocument) {
+      const _query: FilterQuery<AppointmentDocument> = { status: AppointmentStatus.PENDING };
+
+      if (user.role === RoleNames.PATIENT) {
+         const patient = await this.patientService.getPatient({ user: new Types.ObjectId(user._id) });
+         _query.patient = patient._id;
+      } else if (user.role === RoleNames.DOCTOR) {
+         const doctor = await this.doctorService.getDoctor({ user: new Types.ObjectId(user._id) });
+         _query.doctor = doctor._id;
+      }
+
+      return await this.appointmentService.getAppointments(_query);
    }
 
    async getAppointment(appointmentId: string) {
