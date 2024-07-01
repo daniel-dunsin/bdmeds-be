@@ -85,7 +85,7 @@ export class AppointmentProvider {
 
       await this.validatePatientAndDocAvailaibility(bookSessionDto, doctor._id, patient._id, true);
 
-      let join_url;
+      let join_url = undefined;
 
       if (bookSessionDto.mode == AppointmentMode.ONLINE) {
          join_url = await this.zoomService.createZoomEvent({
@@ -117,7 +117,7 @@ export class AppointmentProvider {
             appointmentDate: format(bookSessionDto.appointmentDate, 'do, MMM yyyy'),
             startTime: format(bookSessionDto.startTime, 'h:mm a'),
             endTime: format(bookSessionDto.endTime, 'h:mm a'),
-            meetingLocation: join_url ?? 'Physical',
+            meetingLocation: join_url || 'Physical',
          },
       });
 

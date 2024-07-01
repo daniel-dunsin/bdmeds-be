@@ -3,7 +3,7 @@ import { ConsultationService } from '../services/consulation.service';
 import { AppointmentService } from '../services/appointment.service';
 import { MailService } from 'src/shared/mail/mail.service';
 import { InjectConnection } from '@nestjs/mongoose';
-import { ClientSession, Connection, Types } from 'mongoose';
+import { Connection, Types } from 'mongoose';
 import {
    BaseConsultationReport,
    CardiologyConsultationReportDto,
@@ -36,10 +36,9 @@ export class ConsultationProvider {
    async createConsultationReport(
       createConsultationDto: BaseConsultationReport,
       appointment: AppointmentDocument,
-      session: ClientSession,
       diagnosis: DiagnosisDocument,
    ) {
-      const consultation = await this.consultationService.createConsultation(createConsultationDto, session);
+      const consultation = await this.consultationService.createConsultation(createConsultationDto);
 
       await this.mailService.sendMail({
          to: appointment.patient.user.email,
@@ -53,8 +52,7 @@ export class ConsultationProvider {
       });
 
       diagnosis.consultation = String(consultation._id) as string;
-      await diagnosis.save({ session });
-
+      await diagnosis.save();
       return {
          success: true,
          message: 'consultation created',
@@ -62,270 +60,169 @@ export class ConsultationProvider {
    }
 
    async createOrthopedicReport(orthopedicReportDto: OrthopedicConsultationReportDto, appointmentId: string) {
-      const session = await this.connection.startSession();
-      await session.startTransaction();
-      try {
-         const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
-         if (!appointment) throw new NotFoundException('Appointment not found');
+      const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
+      if (!appointment) throw new NotFoundException('Appointment not found');
 
-         const diagnosis = await this.diagnosisService.createDiagnosis(
-            { ...orthopedicReportDto, patient: appointment.patient._id },
-            Departments.ORTHOPEDICS,
-            session,
-         );
+      const diagnosis = await this.diagnosisService.createDiagnosis(
+         { ...orthopedicReportDto, patient: appointment.patient._id },
+         Departments.ORTHOPEDICS,
+      );
 
-         orthopedicReportDto.appointment = String(appointment._id);
-         orthopedicReportDto.diagnosis = String(diagnosis._id);
-         orthopedicReportDto.diagnosisRef = DiagnosisRef['BONE_METRICS'];
+      orthopedicReportDto.appointment = String(appointment._id);
+      orthopedicReportDto.diagnosis = String(diagnosis._id);
+      orthopedicReportDto.diagnosisRef = DiagnosisRef['BONE_METRICS'];
 
-         const response = await this.createConsultationReport(
-            orthopedicReportDto,
-            appointment,
-            session,
-            diagnosis as any,
-         );
+      const response = await this.createConsultationReport(
+         orthopedicReportDto,
+         appointment,
+         diagnosis as any,
+      );
 
-         await session.commitTransaction();
-         return response;
-      } catch (error) {
-         await session.abortTransaction();
-         throw error;
-      } finally {
-         await session.endSession();
-      }
+      return response;
    }
 
    async createNeurologyReport(neurologyReportDto: NuerologyConsultationReportDto, appointmentId: string) {
-      const session = await this.connection.startSession();
-      await session.startTransaction();
-      try {
-         const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
-         if (!appointment) throw new NotFoundException('Appointment not found');
+      const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
+      if (!appointment) throw new NotFoundException('Appointment not found');
 
-         const diagnosis = await this.diagnosisService.createDiagnosis(
-            { ...neurologyReportDto, patient: appointment.patient._id },
-            Departments.NEUROLOGY,
-            session,
-         );
+      const diagnosis = await this.diagnosisService.createDiagnosis(
+         { ...neurologyReportDto, patient: appointment.patient._id },
+         Departments.NEUROLOGY,
+      );
 
-         neurologyReportDto.appointment = String(appointment._id);
-         neurologyReportDto.diagnosis = String(diagnosis._id);
-         neurologyReportDto.diagnosisRef = DiagnosisRef['BRAIN_METRICS'];
+      neurologyReportDto.appointment = String(appointment._id);
+      neurologyReportDto.diagnosis = String(diagnosis._id);
+      neurologyReportDto.diagnosisRef = DiagnosisRef['BRAIN_METRICS'];
 
-         const response = await this.createConsultationReport(
-            neurologyReportDto,
-            appointment,
-            session,
-            diagnosis as any,
-         );
-         await session.commitTransaction();
-         return response;
-      } catch (error) {
-         await session.abortTransaction();
-         throw error;
-      } finally {
-         await session.endSession();
-      }
+      const response = await this.createConsultationReport(neurologyReportDto, appointment, diagnosis as any);
+
+      return response;
    }
 
    async createOptometryReport(optometryReportDto: OptometryConsultationReportDto, appointmentId: string) {
-      const session = await this.connection.startSession();
-      await session.startTransaction();
-      try {
-         const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
-         if (!appointment) throw new NotFoundException('Appointment not found');
+      const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
+      if (!appointment) throw new NotFoundException('Appointment not found');
 
-         const diagnosis = await this.diagnosisService.createDiagnosis(
-            { ...optometryReportDto, patient: appointment.patient._id },
-            Departments.OPTOMETRY,
-            session,
-         );
+      const diagnosis = await this.diagnosisService.createDiagnosis(
+         { ...optometryReportDto, patient: appointment.patient._id },
+         Departments.OPTOMETRY,
+      );
 
-         optometryReportDto.appointment = String(appointment._id);
-         optometryReportDto.diagnosis = String(diagnosis._id);
-         optometryReportDto.diagnosisRef = DiagnosisRef['EYES_METRICS'];
+      optometryReportDto.appointment = String(appointment._id);
+      optometryReportDto.diagnosis = String(diagnosis._id);
+      optometryReportDto.diagnosisRef = DiagnosisRef['EYES_METRICS'];
 
-         const response = await this.createConsultationReport(
-            optometryReportDto,
-            appointment,
-            session,
-            diagnosis as any,
-         );
-         await session.commitTransaction();
-         return response;
-      } catch (error) {
-         await session.abortTransaction();
-         throw error;
-      } finally {
-         await session.endSession();
-      }
+      const response = await this.createConsultationReport(optometryReportDto, appointment, diagnosis as any);
+
+      return response;
    }
 
    async createCardiologyReport(cardiologyReportDto: CardiologyConsultationReportDto, appointmentId: string) {
-      const session = await this.connection.startSession();
-      await session.startTransaction();
-      try {
-         const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
-         if (!appointment) throw new NotFoundException('Appointment not found');
+      const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
+      if (!appointment) throw new NotFoundException('Appointment not found');
 
-         const diagnosis = await this.diagnosisService.createDiagnosis(
-            { ...cardiologyReportDto, patient: appointment.patient._id },
-            Departments.CARDIOLOGY,
-            session,
-         );
+      const diagnosis = await this.diagnosisService.createDiagnosis(
+         { ...cardiologyReportDto, patient: appointment.patient._id },
+         Departments.CARDIOLOGY,
+      );
 
-         cardiologyReportDto.appointment = String(appointment._id);
-         cardiologyReportDto.diagnosis = String(diagnosis._id);
-         cardiologyReportDto.diagnosisRef = DiagnosisRef['HEART_METRICS'];
+      cardiologyReportDto.appointment = String(appointment._id);
+      cardiologyReportDto.diagnosis = String(diagnosis._id);
+      cardiologyReportDto.diagnosisRef = DiagnosisRef['HEART_METRICS'];
 
-         const response = await this.createConsultationReport(
-            cardiologyReportDto,
-            appointment,
-            session,
-            diagnosis as any,
-         );
-         await session.commitTransaction();
-         return response;
-      } catch (error) {
-         await session.abortTransaction();
-         throw error;
-      } finally {
-         await session.endSession();
-      }
+      const response = await this.createConsultationReport(
+         cardiologyReportDto,
+         appointment,
+         diagnosis as any,
+      );
+
+      return response;
    }
    async createNephrologyReport(nephrologyReportDto: NephrologyConsultationReportDto, appointmentId: string) {
-      const session = await this.connection.startSession();
-      await session.startTransaction();
-      try {
-         const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
-         if (!appointment) throw new NotFoundException('Appointment not found');
+      const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
+      if (!appointment) throw new NotFoundException('Appointment not found');
 
-         const diagnosis = await this.diagnosisService.createDiagnosis(
-            { ...nephrologyReportDto, patient: appointment.patient._id },
-            Departments.NEPHROLOGY,
-            session,
-         );
+      const diagnosis = await this.diagnosisService.createDiagnosis(
+         { ...nephrologyReportDto, patient: appointment.patient._id },
+         Departments.NEPHROLOGY,
+      );
 
-         nephrologyReportDto.appointment = String(appointment._id);
-         nephrologyReportDto.diagnosis = String(diagnosis._id);
-         nephrologyReportDto.diagnosisRef = DiagnosisRef['KIDNEY_METRICS'];
+      nephrologyReportDto.appointment = String(appointment._id);
+      nephrologyReportDto.diagnosis = String(diagnosis._id);
+      nephrologyReportDto.diagnosisRef = DiagnosisRef['KIDNEY_METRICS'];
 
-         const response = await this.createConsultationReport(
-            nephrologyReportDto,
-            appointment,
-            session,
-            diagnosis as any,
-         );
-         await session.commitTransaction();
-         return response;
-      } catch (error) {
-         await session.abortTransaction();
-         throw error;
-      } finally {
-         await session.endSession();
-      }
+      const response = await this.createConsultationReport(
+         nephrologyReportDto,
+         appointment,
+         diagnosis as any,
+      );
+
+      return response;
    }
 
    async createHepatologyReport(hepatologyReportDto: HepatologyConsultationReportDto, appointmentId: string) {
-      const session = await this.connection.startSession();
-      await session.startTransaction();
-      try {
-         const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
-         if (!appointment) throw new NotFoundException('Appointment not found');
+      const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
+      if (!appointment) throw new NotFoundException('Appointment not found');
 
-         const diagnosis = await this.diagnosisService.createDiagnosis(
-            { ...hepatologyReportDto, patient: appointment.patient._id },
-            Departments.HEPATOLOGY,
-            session,
-         );
+      const diagnosis = await this.diagnosisService.createDiagnosis(
+         { ...hepatologyReportDto, patient: appointment.patient._id },
+         Departments.HEPATOLOGY,
+      );
 
-         hepatologyReportDto.appointment = String(appointment._id);
-         hepatologyReportDto.diagnosis = String(diagnosis._id);
-         hepatologyReportDto.diagnosisRef = DiagnosisRef['LIVER_METRICS'];
+      hepatologyReportDto.appointment = String(appointment._id);
+      hepatologyReportDto.diagnosis = String(diagnosis._id);
+      hepatologyReportDto.diagnosisRef = DiagnosisRef['LIVER_METRICS'];
 
-         const response = await this.createConsultationReport(
-            hepatologyReportDto,
-            appointment,
-            session,
-            diagnosis as any,
-         );
-         await session.commitTransaction();
-         return response;
-      } catch (error) {
-         await session.abortTransaction();
-         throw error;
-      } finally {
-         await session.endSession();
-      }
+      const response = await this.createConsultationReport(
+         hepatologyReportDto,
+         appointment,
+         diagnosis as any,
+      );
+
+      return response;
    }
 
    async createDermatologyReport(
       dermatologyReportDto: DermatologyConsultationReportDto,
       appointmentId: string,
    ) {
-      const session = await this.connection.startSession();
-      await session.startTransaction();
-      try {
-         const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
-         if (!appointment) throw new NotFoundException('Appointment not found');
+      const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
+      if (!appointment) throw new NotFoundException('Appointment not found');
 
-         const diagnosis = await this.diagnosisService.createDiagnosis(
-            { ...dermatologyReportDto, patient: appointment.patient._id },
-            Departments.DERMATOLOGY,
-            session,
-         );
+      const diagnosis = await this.diagnosisService.createDiagnosis(
+         { ...dermatologyReportDto, patient: appointment.patient._id },
+         Departments.DERMATOLOGY,
+      );
 
-         dermatologyReportDto.appointment = String(appointment._id);
-         dermatologyReportDto.diagnosis = String(diagnosis._id);
-         dermatologyReportDto.diagnosisRef = DiagnosisRef['SKIN_METRICS'];
+      dermatologyReportDto.appointment = String(appointment._id);
+      dermatologyReportDto.diagnosis = String(diagnosis._id);
+      dermatologyReportDto.diagnosisRef = DiagnosisRef['SKIN_METRICS'];
 
-         const response = await this.createConsultationReport(
-            dermatologyReportDto,
-            appointment,
-            session,
-            diagnosis as any,
-         );
-         await session.commitTransaction();
-         return response;
-      } catch (error) {
-         await session.abortTransaction();
-         throw error;
-      } finally {
-         await session.endSession();
-      }
+      const response = await this.createConsultationReport(
+         dermatologyReportDto,
+         appointment,
+         diagnosis as any,
+      );
+
+      return response;
    }
 
    async createDentistryReport(dentistryReportDto: DentistryConsultationReportDto, appointmentId: string) {
-      const session = await this.connection.startSession();
-      await session.startTransaction();
-      try {
-         const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
-         if (!appointment) throw new NotFoundException('Appointment not found');
+      const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
+      if (!appointment) throw new NotFoundException('Appointment not found');
 
-         const diagnosis = await this.diagnosisService.createDiagnosis(
-            { ...dentistryReportDto, patient: appointment.patient._id },
-            Departments.DENTISTRY,
-            session,
-         );
+      const diagnosis = await this.diagnosisService.createDiagnosis(
+         { ...dentistryReportDto, patient: appointment.patient._id },
+         Departments.DENTISTRY,
+      );
 
-         dentistryReportDto.appointment = String(appointment._id);
-         dentistryReportDto.diagnosis = String(diagnosis._id);
-         dentistryReportDto.diagnosisRef = DiagnosisRef['TEETH_METRICS'];
+      dentistryReportDto.appointment = String(appointment._id);
+      dentistryReportDto.diagnosis = String(diagnosis._id);
+      dentistryReportDto.diagnosisRef = DiagnosisRef['TEETH_METRICS'];
 
-         const response = await this.createConsultationReport(
-            dentistryReportDto,
-            appointment,
-            session,
-            diagnosis as any,
-         );
-         await session.commitTransaction();
-         return response;
-      } catch (error) {
-         await session.abortTransaction();
-         throw error;
-      } finally {
-         await session.endSession();
-      }
+      const response = await this.createConsultationReport(dentistryReportDto, appointment, diagnosis as any);
+
+      return response;
    }
 
    async getPatientReports(department: Departments, patientId: string) {
