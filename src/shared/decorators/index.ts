@@ -70,10 +70,10 @@ export const IsEnum = <T>(_enum: T, isOptional: boolean) => {
    const decorators = [_IsEnum(_enum as object)];
 
    if (isOptional) {
-      decorators.push(ApiPropertyOptional());
+      decorators.push(ApiPropertyOptional({ enum: _enum }));
       decorators.push(IsOptional());
    } else {
-      decorators.push(ApiProperty());
+      decorators.push(ApiProperty({ enum: _enum }));
    }
 
    return applyDecorators(...decorators);

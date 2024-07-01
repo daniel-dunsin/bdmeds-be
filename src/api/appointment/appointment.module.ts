@@ -13,6 +13,8 @@ import { ConsultationProvider } from './providers/consultation.provider';
 import { ConsultationService } from './services/consulation.service';
 import { DiagnosisModule } from '../diagnosis/diagnosis.module';
 import { AppointmentStatus } from './enums';
+import { ZoomModule } from 'src/shared/zoom/zoom.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
    imports: [
@@ -49,10 +51,12 @@ import { AppointmentStatus } from './enums';
             },
          },
       ]),
+      ScheduleModule.forRoot(),
       DoctorModule,
       PatientModule,
       SharedModule,
       DiagnosisModule,
+      ZoomModule,
    ],
    controllers: [AppointmentController, ConsultationController],
    providers: [AppointmentService, AppointmentProvider, ConsultationProvider, ConsultationService],

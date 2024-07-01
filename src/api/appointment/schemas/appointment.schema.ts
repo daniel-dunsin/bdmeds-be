@@ -62,6 +62,11 @@ export class Appointment {
    })
    patientStatus: AppointmentStatus;
 
+   @Prop({
+      type: String,
+   })
+   join_url: string;
+
    // add the invoice
 }
 

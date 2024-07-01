@@ -7,9 +7,11 @@ import { PatientService } from '../../patient/patient.service';
 import { FilterQuery, Types } from 'mongoose';
 import { AppointmentMode, AppointmentStatus } from '../enums';
 import { MailService } from 'src/shared/mail/mail.service';
-import { endOfDay, format, startOfDay } from 'date-fns';
+import { add, endOfDay, format, startOfDay } from 'date-fns';
 import { AppointmentDocument } from '../schemas/appointment.schema';
 import { RoleNames } from '../../user/enums';
+import { ZoomService } from 'src/shared/zoom/zoom.service';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class AppointmentProvider {
@@ -18,6 +20,7 @@ export class AppointmentProvider {
       private readonly doctorService: DoctorService,
       private readonly patientService: PatientService,
       private readonly mailService: MailService,
+      private readonly zoomService: ZoomService,
    ) {}
 
    private async validatePatientAndDocAvailaibility(
@@ -81,9 +84,20 @@ export class AppointmentProvider {
 
       await this.validatePatientAndDocAvailaibility(bookSessionDto, doctor._id, patient._id, true);
 
+      let join_url;
+
+      if (bookSessionDto.mode == AppointmentMode.ONLINE) {
+         join_url = await this.zoomService.createZoomEvent({
+            schedule: bookSessionDto.startTime,
+            attendees: [patient.user.email, doctor.user.email],
+            topic: `Meeting with ${doctor.speciality}`,
+            description: '',
+         });
+      }
+
       const data = await this.appointmentService.createAppointment({
          ...bookSessionDto,
-         mode: AppointmentMode.PHYSICAL,
+         join_url,
          department: doctor.department,
          doctor: doctor._id,
          patient: patient._id,
@@ -102,6 +116,7 @@ export class AppointmentProvider {
             appointmentDate: format(bookSessionDto.appointmentDate, 'do, MMM yyyy'),
             startTime: format(bookSessionDto.startTime, 'h:mm a'),
             endTime: format(bookSessionDto.endTime, 'h:mm a'),
+            meetingLocation: join_url ?? 'Physical',
          },
       });
 
@@ -174,7 +189,7 @@ export class AppointmentProvider {
       };
    }
 
-   async rescheduleAppointment(patientPrevAppointment: SessionDto, appointmentId: string, user: UserDocument) {
+   async rescheduleAppointment(sessionDto: SessionDto, appointmentId: string, user: UserDocument) {
       const appointment = await this.appointmentService.getAppointment({ _id: appointmentId });
 
       if (appointment.status != AppointmentStatus.PENDING)
@@ -284,5 +299,49 @@ export class AppointmentProvider {
          success: true,
          message: 'status updated',
       };
+   }
+
+   @Cron('0 */3 * * * *')
+   async appointmentReminder() {
+      const appointments = await this.appointmentService.getAppointments({
+         startTime: {
+            $lte: add(new Date(), { minutes: 30 }),
+            $gte: new Date(),
+         },
+      });
+
+      if (appointments.length > 0) {
+         await Promise.allSettled(
+            appointments.map(async (appointment: AppointmentDocument) => {
+               const doctor = appointment.doctor.user;
+               const patient = appointment.patient.user;
+               const startTime = format(appointment.startTime, 'h:mm a');
+
+               await this.mailService.sendMail({
+                  to: doctor.email,
+                  subject: 'BDMeds: Appointment reminder',
+                  template: 'appointment-reminder',
+                  context: {
+                     personName: doctor.firstName,
+                     partnerName: `${patient.firstName} ${patient.lastName}`,
+                     startTime,
+                     meetingLocation: appointment.join_url ?? 'Physical',
+                  },
+               });
+
+               await this.mailService.sendMail({
+                  to: patient.email,
+                  subject: 'BDMeds: Appointment reminder',
+                  template: 'appointment-reminder',
+                  context: {
+                     personName: patient.firstName,
+                     partnerName: `${doctor.firstName} ${doctor.lastName}`,
+                     startTime,
+                     meetingLocation: appointment.join_url ?? 'Physical',
+                  },
+               });
+            }),
+         );
+      }
    }
 }
