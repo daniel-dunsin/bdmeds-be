@@ -5,9 +5,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { FileService } from './file/file.service';
 import { v2 as cloudinary } from 'cloudinary';
 import { FileProvider } from './file/file.provider';
+import { ZoomModule } from './zoom/zoom.module';
 
 @Module({
-   imports: [ConfigModule, MailModule],
+   imports: [ConfigModule, MailModule, ZoomModule],
    providers: [UtilService, FileProvider, FileService],
    exports: [MailModule, UtilService, FileService],
 })

@@ -187,6 +187,14 @@ export class DoctorProvider {
          delete query.department;
       }
 
+      if (query.kycVerified) {
+         if (query.kycVerified === 'true') {
+            _query.kycVerified = true;
+         } else if (query.kycVerified === 'false') {
+            _query.kycVerified = false;
+         }
+      }
+
       const data = await this.doctorService.getDoctors(_query);
 
       return {
