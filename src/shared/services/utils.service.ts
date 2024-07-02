@@ -5,6 +5,7 @@ import * as crypto from 'crypto';
 import { availableDays } from 'src/api/doctor/interfaces';
 import { UserDocument } from 'src/api/user/schema/user.schema';
 import * as dateFns from 'date-fns';
+import { ResolvePaginationQuery } from '../interfaces/pagination.interface';
 
 @Injectable()
 export class UtilService {
@@ -36,5 +37,21 @@ export class UtilService {
       today.setUTCHours(hour);
       today.setUTCMinutes(min);
       return today;
+   }
+
+   resolvePaginationQuery(query: ResolvePaginationQuery) {
+      const page = Number(query.page) || 1;
+      const limit = Number(query.limit) || 30;
+      const totalPages = Math.ceil(query.count / limit);
+
+      const skip = (page - 1) * limit;
+
+      return {
+         skip,
+         page,
+         limit,
+         totalPages,
+         count: query.count,
+      };
    }
 }
