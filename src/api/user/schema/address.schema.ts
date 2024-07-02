@@ -10,6 +10,9 @@ export class Address {
 
    @Prop({ required: false })
    country: string;
+
+   @Prop({ required: false })
+   streetAddress: string;
 }
 
 export const AddressSchema = SchemaFactory.createForClass(Address);
