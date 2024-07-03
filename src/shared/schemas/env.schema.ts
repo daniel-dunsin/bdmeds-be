@@ -13,4 +13,5 @@ export const envSchema = Joi.object({
    ZOOM_CLIENT_ID: Joi.string().required(),
    ZOOM_ACCOUNT_ID: Joi.string().required(),
    ZOOM_CLIENT_SECRET: Joi.string().required(),
+   PAYSTACK_SECRET_KEY: Joi.string().required(),
 });

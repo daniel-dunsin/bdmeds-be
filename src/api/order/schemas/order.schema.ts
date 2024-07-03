@@ -3,7 +3,7 @@ import { HydratedDocument, Types } from 'mongoose';
 import { User, UserDocument } from 'src/api/user/schema/user.schema';
 import { schemaOptions } from 'src/shared/constants/db.const';
 import { Cart, CartSchema } from './cart.schema';
-import { Address, AddressSchema } from 'src/api/user/schema/address.schema';
+import { Address, AddressSchema } from './address.schema';
 
 @Schema(schemaOptions)
 export class Order {
@@ -30,7 +30,7 @@ export class Order {
    totalAmount: number;
 
    @Prop()
-   deliveryFee: string;
+   deliveryFee: number;
 }
 
 export type OrderDocument = HydratedDocument<Order>;

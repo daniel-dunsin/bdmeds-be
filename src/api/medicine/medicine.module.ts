@@ -22,5 +22,6 @@ import { SharedModule } from 'src/shared/shared.module';
    ],
    controllers: [MedicineController],
    providers: [MedicineProvider, MedicineService],
+   exports: [MedicineService],
 })
 export class MedicineModule {}

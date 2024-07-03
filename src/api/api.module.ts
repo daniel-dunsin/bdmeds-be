@@ -10,6 +10,8 @@ import { DiagnosisModule } from './diagnosis/diagnosis.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { VideoModule } from './video/video.module';
 import { MedicineModule } from './medicine/medicine.module';
+import { OrderModule } from './order/order.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
    imports: [
@@ -23,6 +25,8 @@ import { MedicineModule } from './medicine/medicine.module';
       AppointmentModule,
       VideoModule,
       MedicineModule,
+      OrderModule,
+      PaymentModule,
    ],
 })
 export class ApiModule {}

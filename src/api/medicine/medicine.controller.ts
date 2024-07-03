@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateMedicineDto } from './dto/create-medicine.dto';
 import { MedicineProvider } from './medicine.provider';
 import { GetMedicineDto } from './dto/get-medicine.dto';
@@ -9,6 +9,7 @@ import { RoleNames } from '../user/enums';
 
 @Controller('medicine')
 @ApiTags('medicine')
+@ApiBearerAuth()
 export class MedicineController {
    constructor(private readonly medicineProvider: MedicineProvider) {}
 

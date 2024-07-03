@@ -6,6 +6,7 @@ import { availableDays } from 'src/api/doctor/interfaces';
 import { UserDocument } from 'src/api/user/schema/user.schema';
 import * as dateFns from 'date-fns';
 import { ResolvePaginationQuery } from '../interfaces/pagination.interface';
+import { isNumber } from 'class-validator';
 
 @Injectable()
 export class UtilService {
@@ -41,10 +42,13 @@ export class UtilService {
 
    resolvePaginationQuery(query: ResolvePaginationQuery) {
       const page = Number(query.page) || 1;
-      const limit = Number(query.limit) || 30;
+      let limit = query?.limit ?? 100000000000;
+      const skip = (page - 1) * limit;
       const totalPages = Math.ceil(query.count / limit);
 
-      const skip = (page - 1) * limit;
+      if (query?.limit === 0) limit = query.count;
+
+      if (query?.limit === 0 && query.count === 0) limit++;
 
       return {
          skip,

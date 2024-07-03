@@ -8,7 +8,7 @@ export class Cart {
       type: Types.ObjectId,
       ref: Medicine.name,
    })
-   medicine: MedicineDocument;
+   medicine: MedicineDocument | string;
 
    @Prop({
       type: Number,

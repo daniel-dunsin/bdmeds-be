@@ -22,7 +22,7 @@ export class MedicineService {
       return await this._medicineModel.findOne(filter);
    }
 
-   async getMedicines(filter: FilterQuery<MedicineDocument>, paginationQuery: PaginationQuery) {
+   async getMedicines(filter: FilterQuery<MedicineDocument>, paginationQuery?: PaginationQuery) {
       const count = await this._medicineModel.find(filter).countDocuments();
 
       const { skip, page, totalPages, limit } = this.utilService.resolvePaginationQuery({
