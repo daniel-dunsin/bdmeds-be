@@ -7,16 +7,28 @@ import { ClientSession, FilterQuery, Model, Query, QueryOptions, UpdateQuery } f
 export class ConsultationService {
    constructor(
       @InjectModel(Consultation.name) private readonly _consultationModel: Model<ConsultationDocument>,
-   ) {}
+   ) {
+      this.getConsultations({});
+   }
 
    private async populate(model: Query<any, ConsultationDocument>) {
-      return await model.populate([{ path: 'diagnosis' }, { path: 'appointment' }]);
+      return await model.populate([
+         { path: 'diagnosis' },
+         { path: 'appointment' },
+         { path: 'prescription', populate: { path: 'medicines' } },
+      ]);
    }
 
    async createConsultation<T>(createConsultaionDto: T, session?: ClientSession) {
-      const consultation = new this._consultationModel(createConsultaionDto);
+      let consultation = new this._consultationModel(createConsultaionDto);
 
-      return await consultation.save({ session });
+      consultation = await consultation.save({ session });
+
+      return await consultation.populate([
+         { path: 'diagnosis' },
+         { path: 'appointment' },
+         { path: 'prescription.medicines' },
+      ]);
    }
 
    async getConsultation(filter: FilterQuery<ConsultationDocument>): Promise<ConsultationDocument> {
@@ -27,6 +39,8 @@ export class ConsultationService {
 
    async getConsultations(filter: FilterQuery<ConsultationDocument>): Promise<ConsultationDocument[]> {
       const consulation = await this.populate(this._consultationModel.find(filter).sort({ createdAt: -1 }));
+
+      console.log(JSON.stringify(consulation[0]));
 
       return consulation;
    }

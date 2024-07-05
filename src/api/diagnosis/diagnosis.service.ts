@@ -58,15 +58,23 @@ export class DiagnosisService {
          { path: 'patient', populate: { path: 'user' } },
          {
             path: 'consultation',
-            populate: {
-               path: 'appointment',
-               populate: {
-                  path: 'doctor',
+            populate: [
+               {
+                  path: 'appointment',
                   populate: {
-                     path: 'user',
+                     path: 'doctor',
+                     populate: {
+                        path: 'user',
+                     },
                   },
                },
-            },
+               {
+                  path: 'prescription',
+                  populate: {
+                     path: 'medicines',
+                  },
+               },
+            ],
          },
       ]);
    }

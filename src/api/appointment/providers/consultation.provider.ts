@@ -40,6 +40,8 @@ export class ConsultationProvider {
    ) {
       const consultation = await this.consultationService.createConsultation(createConsultationDto);
 
+      console.log(consultation);
+
       await this.mailService.sendMail({
          to: appointment.patient.user.email,
          subject: `BdMeds: Dr. ${appointment.doctor.user.firstName} Consultation Report`,
@@ -48,6 +50,7 @@ export class ConsultationProvider {
             patientName: appointment.patient.user.firstName,
             doctorName: appointment.doctor.user.firstName,
             department: appointment.department,
+            prescription: consultation.prescription,
          },
       });
 

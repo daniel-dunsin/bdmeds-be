@@ -5,7 +5,7 @@ import { Appointment, AppointmentDocument } from './appointment.schema';
 import { Type } from 'class-transformer';
 import { DiagnosisDocument } from '../types';
 import { DiagnosisRef } from '../enums';
-import { Prescription, PrescriptionSchema } from './prescription.schema';
+import { Medicine, MedicineDocument } from 'src/api/medicine/schemas/medicine.schema';
 
 @Schema(schemaOptions)
 export class Consultation {
@@ -28,10 +28,26 @@ export class Consultation {
    symptoms: string;
 
    @Prop({
-      type: PrescriptionSchema,
+      type: {
+         medicines: {
+            type: [
+               {
+                  type: Types.ObjectId,
+                  ref: Medicine.name,
+               },
+            ],
+         },
+         prescriptionNote: {
+            type: String,
+         },
+      },
       required: false,
    })
-   prescription: Prescription;
+   prescription: {
+      medicines: Array<MedicineDocument | string>;
+
+      prescriptionNote: string;
+   };
 }
 
 export type ConsultationDocument = HydratedDocument<Consultation>;
