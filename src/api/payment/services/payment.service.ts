@@ -20,7 +20,10 @@ export class PaymentService {
    }
 
    async updatePaymentAttempt(filter: FilterQuery<PaymentAttempt>, update: UpdateQuery<PaymentAttempt>) {
-      return await this._paymentAttemptModel.findOneAndUpdate(filter, update);
+      return await this._paymentAttemptModel.findOneAndUpdate(filter, update, {
+         new: true,
+         runValidators: true,
+      });
    }
 
    async getPaymentAttempts(filter: FilterQuery<PaymentAttempt>) {

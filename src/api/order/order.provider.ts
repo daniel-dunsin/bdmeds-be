@@ -20,7 +20,7 @@ export class OrderProvider {
    ) {}
 
    async checkout(checkoutDto: CheckoutDto, user: UserDocument) {
-      const reference = `checkout-${v4()}`;
+      const reference = `medicine-checkout-${v4()}`;
 
       const { data: medicines } = await this.medicineService.getMedicines({
          _id: { $in: checkoutDto.cart.map((cart) => cart.medicine) },

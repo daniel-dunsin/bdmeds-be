@@ -7,6 +7,9 @@ import { PaystackService } from './services/paystack.service';
 import { PaystackProvider } from './providers/paystack.provider';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PaymentAttempt, PaymentAttemptSchema } from './schemas/payment.attempt.schema';
+import { SharedModule } from 'src/shared/shared.module';
+import { OrderModule } from '../order/order.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
    imports: [
@@ -16,6 +19,9 @@ import { PaymentAttempt, PaymentAttemptSchema } from './schemas/payment.attempt.
             schema: PaymentAttemptSchema,
          },
       ]),
+      SharedModule,
+      OrderModule,
+      UserModule,
    ],
    controllers: [PaymentController],
    providers: [PaymentProvider, PaymentService, WebhookService, PaystackService, PaystackProvider],

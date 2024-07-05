@@ -14,7 +14,7 @@ export class PaystackService {
       const response = await this.paystack.transaction.initialize({
          email: data.email,
          reference: data.reference,
-         amount: JSON.stringify(parseInt(String(data.amount * 1.1))),
+         amount: JSON.stringify(parseInt(String(data.amount * 1.1 * 100))),
          callback_url: `${frontendUrl}/payment/${data.reference}`,
          currency: 'NGN',
       });
