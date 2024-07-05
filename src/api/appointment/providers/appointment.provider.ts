@@ -13,6 +13,8 @@ import { RoleNames } from '../../user/enums';
 import { ZoomService } from 'src/shared/zoom/zoom.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Type } from 'class-transformer';
+import { v4 } from 'uuid';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AppointmentProvider {
@@ -21,7 +23,7 @@ export class AppointmentProvider {
       private readonly doctorService: DoctorService,
       private readonly patientService: PatientService,
       private readonly mailService: MailService,
-      private readonly zoomService: ZoomService,
+      private readonly configService: ConfigService,
    ) {}
 
    private async validatePatientAndDocAvailaibility(
@@ -88,12 +90,9 @@ export class AppointmentProvider {
       let join_url = undefined;
 
       if (bookSessionDto.mode == AppointmentMode.ONLINE) {
-         join_url = await this.zoomService.createZoomEvent({
-            schedule: bookSessionDto.startTime,
-            attendees: [patient.user.email, doctor.user.email],
-            topic: `Meeting with ${doctor.speciality}`,
-            description: '',
-         });
+         const frontendUrl = this.configService.get<string>('FRONTEND_URL');
+         const randomId = v4();
+         join_url = `${frontendUrl}/meet?room_id=${randomId}`;
       }
 
       const data = await this.appointmentService.createAppointment({

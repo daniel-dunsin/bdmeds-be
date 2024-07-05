@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { WebhookResponse } from './interfaces';
 import { Request, Response } from 'express';
@@ -22,9 +22,9 @@ export class PaymentController {
       res.status(200).json({ message: 'webhook processed' });
    }
 
+   @Get('confirm/:reference')
    @IsPublic()
-   @ApiBody({ schema: { type: 'object', properties: { reference: { type: 'string' } } } })
-   async verifyTransaction(@Body('reference') reference: string) {
+   async verifyTransaction(@Param('reference') reference: string) {
       const data = await this.paymentProvider.verifyTransaction(reference);
 
       return data;
