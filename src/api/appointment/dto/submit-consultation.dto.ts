@@ -24,8 +24,6 @@ export class OrthopedicConsultationReportDto extends BaseConsultationReport {
    boneHealthStatus: string;
 
    @IsNumber(false)
-   @Min(1)
-   @Max(360)
    rangeOfMotion: number;
 
    @IsNumber(false)
@@ -80,8 +78,6 @@ export class CardiologyConsultationReportDto extends BaseConsultationReport {
    bloodPressureDiastolic: number;
 
    @IsNumber(false)
-   @Min(0)
-   @Max(100)
    bloodOxygenLevel: number;
 
    @IsNumber(false)
@@ -94,8 +90,6 @@ export class CardiologyConsultationReportDto extends BaseConsultationReport {
    cholestrolHDL: number;
 
    @IsNumber(false)
-   @Min(0)
-   @Max(100)
    ejectionFraction: number;
 
    @IsNumber(false)

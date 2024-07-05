@@ -56,7 +56,7 @@ export class ConsultationController {
    }
 
    @Post('report/:appointmentId/cardiology')
-   @Roles([RoleNames.DOCTOR])
+   @Roles([RoleNames.DOCTOR, RoleNames.PATIENT])
    async createCardiologyReport(
       @Param('appointmentId') appointmentId: string,
       @Body() cardiologyReportDto: CardiologyConsultationReportDto,
