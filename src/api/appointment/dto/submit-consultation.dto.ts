@@ -1,8 +1,16 @@
 import { ApiPreconditionFailedResponse, ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { Max, Min, ValidateNested } from 'class-validator';
+import { IsArray, IsOptional, Max, Min, Validate, ValidateNested } from 'class-validator';
 import { Frequency } from 'src/api/diagnosis/enums';
 import { IsEnum, IsNumber, IsString } from 'src/shared/decorators';
+
+export class PrescriptionsDto {
+   @IsArray()
+   medicines: string[];
+
+   @IsString(false)
+   prescriptionNote: string;
+}
 
 export class BaseConsultationReport {
    @IsString(false)
@@ -13,6 +21,11 @@ export class BaseConsultationReport {
 
    @IsString(true)
    symptoms?: string;
+
+   @ValidateNested()
+   @Type(() => PrescriptionsDto)
+   @IsOptional()
+   prescription: PrescriptionsDto;
 
    diagnosis: string;
    diagnosisRef: string;

@@ -28,10 +28,10 @@ export class Consultation {
    symptoms: string;
 
    @Prop({
-      type: [PrescriptionSchema],
-      default: [],
+      type: PrescriptionSchema,
+      required: false,
    })
-   prescriptions: Prescription[];
+   prescription: Prescription;
 }
 
 export type ConsultationDocument = HydratedDocument<Consultation>;

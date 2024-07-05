@@ -6,10 +6,14 @@ import { schemaOptions } from 'src/shared/constants/db.const';
 @Schema(schemaOptions)
 export class Prescription {
    @Prop({
-      type: Types.ObjectId,
-      ref: Medicine.name,
+      type: [
+         {
+            type: Types.ObjectId,
+            ref: Medicine.name,
+         },
+      ],
    })
-   medicine: MedicineDocument | string;
+   medicines: Array<MedicineDocument | string>;
 
    @Prop({})
    prescriptionNote: string;
