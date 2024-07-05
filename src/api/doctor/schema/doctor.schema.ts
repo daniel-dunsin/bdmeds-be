@@ -82,6 +82,9 @@ export class Doctor {
       default: [],
    })
    availableDays: availableDays[];
+
+   @Prop()
+   chargePerSession: number;
 }
 
 export type DoctorDocument = HydratedDocument<Doctor>;

@@ -1,11 +1,5 @@
 import { Gender } from 'src/api/user/enums';
-import {
-   IsString,
-   IsEnum,
-   IsNumber,
-   IsDate,
-   IsBoolean,
-} from 'src/shared/decorators';
+import { IsString, IsEnum, IsNumber, IsDate, IsBoolean } from 'src/shared/decorators';
 import { Days, DoctorSpeciality } from '../enums';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsOptional, ValidateNested } from 'class-validator';
@@ -59,4 +53,7 @@ export class UpdateDoctorDto extends BaseUpdateUserDto {
 
    @IsBoolean(true)
    isAvailable: boolean;
+
+   @IsNumber(true)
+   chargePerSession: number;
 }
