@@ -5,6 +5,7 @@ import { Appointment, AppointmentDocument } from './appointment.schema';
 import { Type } from 'class-transformer';
 import { DiagnosisDocument } from '../types';
 import { DiagnosisRef } from '../enums';
+import { Prescription, PrescriptionSchema } from './prescription.schema';
 
 @Schema(schemaOptions)
 export class Consultation {
@@ -25,6 +26,12 @@ export class Consultation {
 
    @Prop()
    symptoms: string;
+
+   @Prop({
+      type: [PrescriptionSchema],
+      default: [],
+   })
+   prescriptions: Prescription[];
 }
 
 export type ConsultationDocument = HydratedDocument<Consultation>;

@@ -26,7 +26,7 @@ export class ConsultationService {
    }
 
    async getConsultations(filter: FilterQuery<ConsultationDocument>): Promise<ConsultationDocument[]> {
-      const consulation = await this.populate(this._consultationModel.find(filter));
+      const consulation = await this.populate(this._consultationModel.find(filter).sort({ createdAt: -1 }));
 
       return consulation;
    }
