@@ -34,6 +34,9 @@ export class OnBoardDoctorDto extends RegisterDto {
 
    @IsEnum(DoctorSpeciality, false)
    speciality: DoctorSpeciality;
+
+   @IsNumber(false)
+   chargePerSession: number;
 }
 
 export class OnBoardAdminDto extends RegisterDto {}
