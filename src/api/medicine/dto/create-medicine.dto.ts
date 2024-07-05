@@ -14,5 +14,5 @@ export class CreateMedicineDto {
    stock: number;
 
    @IsNumber(false)
-   amount: number;
+   price: number;
 }

@@ -44,6 +44,7 @@ export class UtilService {
       const page = Number(query.page) || 1;
       let limit = query?.limit ?? 100000000000;
       const skip = (page - 1) * limit;
+      console.log(query.count, limit);
       const totalPages = Math.ceil(query.count / limit);
 
       if (query?.limit === 0) limit = query.count;

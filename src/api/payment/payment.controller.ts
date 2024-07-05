@@ -15,6 +15,7 @@ export class PaymentController {
    ) {}
 
    @Post('/webhook')
+   @IsPublic()
    async webhook(@Req() req: Request<object, object, WebhookResponse>, @Res() res: Response) {
       await this.webhookService.processWebhook(req);
 
