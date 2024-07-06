@@ -22,6 +22,7 @@ export class BaseConsultationReport {
    @IsString(true)
    symptoms?: string;
 
+   @ApiProperty()
    @ValidateNested()
    @Type(() => PrescriptionsDto)
    @IsOptional()
