@@ -62,5 +62,6 @@ import { PaymentModule } from '../payment/payment.module';
    ],
    controllers: [AppointmentController, ConsultationController],
    providers: [AppointmentService, AppointmentProvider, ConsultationProvider, ConsultationService],
+   exports: [AppointmentService],
 })
 export class AppointmentModule {}
