@@ -10,6 +10,7 @@ import { PaymentAttempt, PaymentAttemptSchema } from './schemas/payment.attempt.
 import { SharedModule } from 'src/shared/shared.module';
 import { OrderModule } from '../order/order.module';
 import { UserModule } from '../user/user.module';
+import { AppointmentModule } from '../appointment/appointment.module';
 
 @Module({
    imports: [
@@ -21,6 +22,7 @@ import { UserModule } from '../user/user.module';
       ]),
       SharedModule,
       forwardRef(() => OrderModule),
+      forwardRef(() => AppointmentModule),
       UserModule,
    ],
    controllers: [PaymentController],

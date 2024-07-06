@@ -9,13 +9,20 @@ export class PaystackService {
       private readonly configService: ConfigService,
    ) {}
 
-   public async initiateTransaction(data: { email: string; reference: string; amount: number }) {
+   public async initiateTransaction(data: {
+      email: string;
+      reference: string;
+      amount: number;
+      redirect_url?: string;
+   }) {
       const frontendUrl = this.configService.get('FRONTEND_URL');
       const response = await this.paystack.transaction.initialize({
          email: data.email,
          reference: data.reference,
          amount: JSON.stringify(parseInt(String(data.amount * 1.1 * 100))),
-         callback_url: `${frontendUrl}/payment/${data.reference}`,
+         callback_url: data.redirect_url
+            ? `${frontendUrl}${data.redirect_url}`
+            : `${frontendUrl}/payment/${data.reference}`,
          currency: 'NGN',
       });
 

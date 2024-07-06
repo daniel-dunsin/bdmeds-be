@@ -15,6 +15,7 @@ import { DiagnosisModule } from '../diagnosis/diagnosis.module';
 import { AppointmentStatus } from './enums';
 import { ZoomModule } from 'src/shared/zoom/zoom.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { PaymentModule } from '../payment/payment.module';
 
 @Module({
    imports: [
@@ -57,6 +58,7 @@ import { ScheduleModule } from '@nestjs/schedule';
       SharedModule,
       DiagnosisModule,
       ZoomModule,
+      PaymentModule,
    ],
    controllers: [AppointmentController, ConsultationController],
    providers: [AppointmentService, AppointmentProvider, ConsultationProvider, ConsultationService],

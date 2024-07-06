@@ -15,6 +15,8 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { Type } from 'class-transformer';
 import { v4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
+import { PaymentService } from 'src/api/payment/services/payment.service';
+import { PaystackService } from 'src/api/payment/services/paystack.service';
 
 @Injectable()
 export class AppointmentProvider {
@@ -24,6 +26,8 @@ export class AppointmentProvider {
       private readonly patientService: PatientService,
       private readonly mailService: MailService,
       private readonly configService: ConfigService,
+      private readonly paymentService: PaymentService,
+      private readonly paystackService: PaystackService,
    ) {}
 
    private async validatePatientAndDocAvailaibility(
@@ -87,6 +91,9 @@ export class AppointmentProvider {
 
       await this.validatePatientAndDocAvailaibility(bookSessionDto, doctor._id, patient._id, true);
 
+      const amount = doctor.chargePerSession;
+      const reference = `doctor-payment-${v4()}`;
+
       let join_url = undefined;
 
       if (bookSessionDto.mode == AppointmentMode.ONLINE) {
@@ -95,35 +102,36 @@ export class AppointmentProvider {
          join_url = `${frontendUrl}/meet?room_id=${randomId}`;
       }
 
-      const data = await this.appointmentService.createAppointment({
+      const appointment = {
          ...bookSessionDto,
          join_url,
          department: doctor.department,
          doctor: doctor._id,
          patient: patient._id,
+      };
+
+      const paymentUrl = this.paystackService.initiateTransaction({
+         email: user.email,
+         reference,
+         amount,
+         redirect_url: '/appointments',
       });
 
-      await this.mailService.sendMail({
-         to: doctor.user.email,
-         subject: 'BdMeds',
-         template: 'doctor-new-appointment',
-         context: {
-            doctorName: doctor.user.firstName,
-            appointmentMode: bookSessionDto.mode,
-            patientName: `${user?.firstName} ${user?.lastName}`,
-            patientEmail: user?.email,
-            patientPhoneNumber: user.phoneNumber,
-            appointmentDate: format(bookSessionDto.appointmentDate, 'do, MMM yyyy'),
-            startTime: format(bookSessionDto.startTime, 'h:mm a'),
-            endTime: format(bookSessionDto.endTime, 'h:mm a'),
-            meetingLocation: join_url || 'Physical',
+      await this.paymentService.createPaymentAttempt({
+         user: user._id,
+         reference,
+         amount,
+         metadata: {
+            appointment,
+            doctor,
+            user,
          },
       });
 
       return {
          success: true,
-         message: 'Appointment Created',
-         data,
+         message: 'Appointment Scheduled',
+         data: paymentUrl,
       };
    }
 
