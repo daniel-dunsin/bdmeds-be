@@ -110,7 +110,7 @@ export class AppointmentProvider {
          patient: patient._id,
       };
 
-      const paymentUrl = this.paystackService.initiateTransaction({
+      const paymentUrl = await this.paystackService.initiateTransaction({
          email: user.email,
          reference,
          amount,
