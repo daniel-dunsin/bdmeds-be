@@ -139,6 +139,7 @@ export class AuthService {
       await this.doctorService.createDoctor({
          yearsOfExperience: onBoardDoctorDto.yearsOfExperience,
          speciality: onBoardDoctorDto.speciality,
+         chargePerSession: onBoardDoctorDto.chargePerSession,
          user: user._id,
       });
 
