@@ -13,7 +13,7 @@ export class FileService {
       try {
          const data = await this.cloudinary.uploader.upload(file, {
             ...options,
-            folder: 'pendulum',
+            folder: 'dbmeds',
          });
 
          return { url: data.secure_url, public_id: data.public_id };
